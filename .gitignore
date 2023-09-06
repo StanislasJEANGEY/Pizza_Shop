@@ -62,3 +62,4 @@ app.*.map.json
 
 #docker
 .env
+docker-compose.yml
