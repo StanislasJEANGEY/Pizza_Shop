@@ -16,16 +16,5 @@ $db->addConnection(parse_ini_file($dbcom), 'commande');
 $db->addConnection(parse_ini_file($dbcat), 'catalog');
 $db->setAsGlobal();
 $db->bootEloquent();
-$logger = new \Monolog\Logger('commandes');
-$logger->pushHandler(new \Monolog\Handler\StreamHandler(__DIR__ . '/../logs/commandes.log', \Monolog\Level::Debug));
 
-$commandeDTO = new CommandeDTO("lucien@gmal.com",  Commande::LIVRAISON_A_EMPORTER);
-$commandeDTO->addItem(new ItemDTO(1, 4, 1));
-$commandeDTO->addItem(new ItemDTO(2, 3, 2));
-$commandeDTO->addItem(new ItemDTO(5, 3, 2));
-
-$infoproduit = new \pizzashop\shop\domain\service\catalogue\ServiceCatalogue();
-$service_commande = new \pizzashop\shop\domain\service\commande\ServiceCommande($infoproduit,$logger);
-$res = $service_commande->creerCommande($commandeDTO);
-print $res->toJson();
 
