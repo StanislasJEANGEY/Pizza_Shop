@@ -64,31 +64,6 @@ services:
       - pizza-shop.commande.db
       - pizza-shop.catalogue.db
 
-  phpmyadmin.commande:
-    image: phpmyadmin:latest
-    environment:
-      PMA_HOST: pizza-shop.commande.db
-      PMA_PORT: 3306
-    ports:
-      - "18078:80"
-    networks:
-      - pizza-shop.net
-    depends_on:
-      - pizza-shop.catalogue.db
-      - pizza-shop.commande.db
-
-  phpmyadmin.catalogue:
-    image: phpmyadmin:latest
-    environment:
-      PMA_HOST: pizza-shop.catalogue.db
-      PMA_PORT: 5432
-    ports:
-      - "18079:80"
-    networks:
-      - pizza-shop.net
-    depends_on:
-      - pizza-shop.catalogue.db
-      - pizza-shop.commande.db
 
 ######################################
 ###  AUTH Service : service d'authentification JWT
