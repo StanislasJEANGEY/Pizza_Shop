@@ -6,6 +6,9 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 return function( \Slim\App $app):void {
 
+    $app->get('/', \pizzashop\shop\app\actions\get\Accueil::class)
+        ->setName('accueil');
+
     $app->post('/commandes[/]', \pizzashop\shop\shop\app\actions\CreerCommandeAction::class)
         ->setName('creer_commande');
 
