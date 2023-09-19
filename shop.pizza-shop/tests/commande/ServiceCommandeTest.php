@@ -1,11 +1,11 @@
 <?php
 
-namespace pizzashop\tests\commande;
+namespace pizzashop\shop\tests\commande;
 
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
-use pizzashop\shop\domain\entities\commande\Commande;
-use pizzashop\shop\domain\entities\commande\Item;
+use pizzashop\shop\shop\domain\entities\commande\Commande;
+use pizzashop\shop\shop\domain\entities\commande\Item;
 use Illuminate\Database\Capsule\Manager as DB;
 
 class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
@@ -27,8 +27,8 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
         $db->setAsGlobal();
         $db->bootEloquent();
 
-        self::$serviceProduits = new \pizzashop\shop\domain\service\catalogue\ServiceCatalogue();
-        self::$serviceCommande = new \pizzashop\shop\domain\service\commande\ServiceCommande(self::$serviceProduits);
+        self::$serviceProduits = new \pizzashop\shop\shop\domain\service\catalogue\ServiceCatalogue();
+        self::$serviceCommande = new \pizzashop\shop\shop\domain\service\commande\ServiceCommande(self::$serviceProduits);
         self::$faker = Factory::create('fr_FR');
         self::fill();
 
