@@ -7,7 +7,7 @@ Développement Web
 -   Jules BRESSON
 -   Antonin DEPOILLY
 -   Stanislas JEANGEY
--   Damien MELCHIORE
+-   Damien MELCHIOR
 
 
 ## Bases de données : Commande
