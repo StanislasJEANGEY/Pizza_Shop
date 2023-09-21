@@ -11,10 +11,9 @@ class CommandeService
     /**
      * @throws ServiceCommandeNotFoundException
      */
-    public function accederCommande(int $id_commande)
+    public function accederCommande(string $id_commade) : CommandeDTO
     {
-        if (Commande::where('id', $id_commande)->exists()) {
-            $commande = Commande::find($id_commande);
+        if ($commande = Commande::find($id_commade)) {
             return new CommandeDTO(
                 $commande->id,
                 $commande->date_commande,
@@ -31,18 +30,21 @@ class CommandeService
     /**
      * @throws ServiceCommandeNotFoundException
      */
-    public function validerCommande(array $commande)
+    public function validerCommande(string $id_commande) : CommandeDTO
     {
-        if (isset($commande['mail_client']) && isset($commande['type_livraison']) && isset($commande['delai_commande']) && isset($commande['montant_commande'])) {
-            $commande = new Commande();
-            $commande->mail_client = $commande['mail_client'];
-            $commande->type_livraison = $commande['type_livraison'];
-            $commande->delai_commande = $commande['delai_commande'];
-            $commande->montant_commande = $commande['montant_commande'];
+        if ($commande = Commande::find($id_commande)) {
+            $commande->etat_commande = Commande::ETAT_VALIDE;
             $commande->save();
-            return $commande;
+            return new CommandeDTO(
+                $commande->id,
+                $commande->date_commande,
+                $commande->type_livraison,
+                $commande->delai_commande,
+                $commande->etat_commande,
+                $commande->montant_commande,
+                $commande->mail_client);
         } else {
-            throw new ServiceCommandeNotFoundException("Commande not valid", 400);
+            throw new ServiceCommandeNotFoundException("Commande not found", 404);
         }
     }
 }
