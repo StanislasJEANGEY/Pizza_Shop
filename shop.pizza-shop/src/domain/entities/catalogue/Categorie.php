@@ -1,6 +1,8 @@
 <?php
 
-namespace pizzashop\shop\shop\domain\entities\catalogue;
+namespace pizzashop\shop\domain\entities\catalogue;
+
+use pizzashop\shop\shop\domain\dto\catalogue\CategorieDTO;
 
 class Categorie extends \Illuminate\Database\Eloquent\Model
 {
