@@ -12,6 +12,7 @@ class CommandeDTO extends DTO{
     public int $etat_commande;
     public float $montant_commande;
     public string $mail_client;
+    public array $items_commande;
 
     public function __construct(int $numero_commande, string $date_commande, int $type_livraison, int $delai_commande, int $etat_commande, float $montant_commande, string $mail_client)
     {
