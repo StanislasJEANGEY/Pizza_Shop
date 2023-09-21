@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\shop\shop\domain\dto\catalogue;
+namespace pizzashop\shop\domain\dto\catalogue;
 
 class ProduitDTO extends \pizzashop\shop\shop\domain\dto\DTO
 {

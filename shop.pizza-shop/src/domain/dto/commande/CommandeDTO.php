@@ -1,7 +1,7 @@
 <?php
-namespace pizzashop\shop\shop\domain\dto\commande;
+namespace pizzashop\shop\domain\dto\commande;
 
-use pizzashop\shop\shop\domain\dto\DTO;
+use pizzashop\shop\domain\dto\DTO;
 
 class CommandeDTO extends DTO{
 

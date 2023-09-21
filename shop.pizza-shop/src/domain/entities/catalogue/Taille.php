@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\shop\shop\domain\entities\catalogue;
+namespace pizzashop\shop\domain\entities\catalogue;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
