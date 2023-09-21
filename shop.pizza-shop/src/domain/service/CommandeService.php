@@ -3,6 +3,7 @@
 namespace pizzashop\shop\domain\service;
 
 use pizzaShop\shop\domain\entities\commande\Commande;
+use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
 use pizzashop\shop\shop\domain\dto\commande\CommandeDTO;
 
 class CommandeService

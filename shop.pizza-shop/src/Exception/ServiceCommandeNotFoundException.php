@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\shop\domain\service;
+namespace pizzashop\shop\Exception;
 
 use Exception;
 
