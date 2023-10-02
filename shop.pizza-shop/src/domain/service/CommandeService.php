@@ -7,6 +7,8 @@ use Monolog\Logger;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzaShop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
+use Respect\Validation\Exceptions\ValidationException;
+use Respect\Validation\Validator as v;
 
 class CommandeService implements iCommandeService
 {
@@ -20,9 +22,9 @@ class CommandeService implements iCommandeService
     /**
      * @throws ServiceCommandeNotFoundException
      */
-    public function accederCommande(string $id_commade) : CommandeDTO
+    public function accederCommande(string $uuid_commande) : CommandeDTO
     {
-        if ($commande = Commande::find($id_commade)) {
+        if ($commande = Commande::find($uuid_commande)) {
             return new CommandeDTO(
                 $commande->id,
                 $commande->date_commande,
@@ -39,9 +41,9 @@ class CommandeService implements iCommandeService
     /**
      * @throws ServiceCommandeNotFoundException
      */
-    public function validerCommande(string $id_commande) : CommandeDTO
+    public function validerCommande(string $uuid_commande) : CommandeDTO
     {
-        if ($commande = Commande::find($id_commande)) {
+        if ($commande = Commande::find($uuid_commande)) {
             $commande->etat_commande = Commande::ETAT_VALIDE;
             $commande->save();
             return new CommandeDTO(
@@ -57,26 +59,43 @@ class CommandeService implements iCommandeService
         }
     }
 
+    /**
+     * @throws ServiceCommandeNotFoundException
+     */
     public function creerCommande(CommandeDTO $commandeDTO) : CommandeDTO
     {
-        $identifiantCommande = uniqid();
-        $dateCommande = date("Y-m-d H:i:s");
-        $etatCommande = Commande::ETAT_CREE;
-        $itemsCommandes = $commandeDTO->getItems();
-        $montantCommande = 0;
-        foreach ($itemsCommandes as $item) {
-            $produit = $this->catalogueService->recupererProduit($item->getNumero());
-            $sousTotal = $produit->getPrix() * $item->getQuantite();
-            $montantCommande += $sousTotal;
+        try {
+            $validator = v::arrayType()
+                ->key('type_livraison', v::in(['livraison_express', 'livraison_standard']))
+                ->key('delai', v::date('Y-m-d H:i:s'))
+                ->key('items', v::notEmpty()->each(
+                    v::key('numero', v::intVal()->positive())
+                        ->key('quantite', v::intVal()->positive())
+                        ->key('taille', v::in(['petite', 'moyenne', 'grande']))
+                ));
+            $validator->assert($commandeDTO->toArray());
+
+            $identifiantCommande = uniqid();
+            $dateCommande = date("Y-m-d H:i:s");
+            $etatCommande = Commande::ETAT_CREE;
+            $itemsCommandes = $commandeDTO->getItems();
+            $montantCommande = 0;
+            foreach ($itemsCommandes as $item) {
+                $produit = $this->catalogueService->recupererProduit($item->getNumero());
+                $sousTotal = $produit->getPrix() * $item->getQuantite();
+                $montantCommande += $sousTotal;
+            }
+            return new CommandeDTO(
+                $identifiantCommande,
+                $dateCommande,
+                $commandeDTO->getTypeLivraison(),
+                $commandeDTO->getDelai(),
+                $etatCommande,
+                $montantCommande,
+                $commandeDTO->getMailClient());
+        } catch (ValidationException $e) {
+            throw new ServiceCommandeNotFoundException("Commande not found", 404);
         }
-        return new CommandeDTO(
-            $identifiantCommande,
-            $dateCommande,
-            $commandeDTO->getTypeLivraison(),
-            $commandeDTO->getDelai(),
-            $etatCommande,
-            $montantCommande,
-            $commandeDTO->getMailClient());
     }
 
     public function loggin(CommandeDTO $commandeDTO) : CommandeDTO
@@ -86,5 +105,6 @@ class CommandeService implements iCommandeService
         $logger->info('Commande créée', ['id' => $commandeDTO->getIdCommande()]);
         return $commandeDTO;
     }
+
 }
 

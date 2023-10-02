@@ -2,6 +2,9 @@
 
 namespace pizzashop\shop\domain\dto\catalogue;
 
+/**
+ * @method getPrix()
+ */
 class ProduitDTO extends \pizzashop\shop\shop\domain\dto\DTO
 {
 

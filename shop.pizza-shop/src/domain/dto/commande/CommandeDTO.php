@@ -9,6 +9,7 @@ use pizzashop\shop\domain\dto\DTO;
  * @method getMailClient()
  * @method getItems()
  * @method getIdCommande()
+ * @method toArray()
  */
 class CommandeDTO extends DTO{
 
