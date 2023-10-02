@@ -22,7 +22,7 @@ class CommandeDTO extends DTO{
     public string $mail_client;
     public array $items_commande;
 
-    public function __construct(int $id_commande, string $date_commande, int $type_livraison, int $delai_commande, int $etat_commande, float $montant_commande, string $mail_client)
+    public function __construct(int $id_commande, string $date_commande, int $type_livraison, int $delai_commande, int $etat_commande, float $montant_commande, string $mail_client, array $items_commande)
     {
         $this->id_commande = $id_commande;
         $this->date_commande = $date_commande;
@@ -31,6 +31,7 @@ class CommandeDTO extends DTO{
         $this->etat_commande = $etat_commande;
         $this->montant_commande = $montant_commande;
         $this->mail_client = $mail_client;
+        $this->items_commande = $items_commande;
     }
 
 }

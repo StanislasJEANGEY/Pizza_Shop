@@ -4,6 +4,9 @@ namespace pizzashop\shop\domain\dto\catalogue;
 
 /**
  * @method getPrix()
+ * @method getLibelle()
+ * @method getDescription()
+ * @method getImage()
  */
 class ProduitDTO extends \pizzashop\shop\shop\domain\dto\DTO
 {

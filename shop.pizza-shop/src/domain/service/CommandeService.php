@@ -5,6 +5,7 @@ namespace pizzashop\shop\domain\service;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
+use pizzashop\shop\domain\dto\commande\ItemDTO;
 use pizzaShop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
 use Respect\Validation\Exceptions\ValidationException;
@@ -25,17 +26,32 @@ class CommandeService implements iCommandeService
     public function accederCommande(string $uuid_commande) : CommandeDTO
     {
         if ($commande = Commande::find($uuid_commande)) {
-            return new CommandeDTO(
-                $commande->id,
-                $commande->date_commande,
-                $commande->type_livraison,
-                $commande->delai_commande,
-                $commande->etat_commande,
-                $commande->montant_commande,
-                $commande->mail_client);
+            $itemsCommandes = $commande->items;
+            $itemDTO = [];
+            foreach ($itemsCommandes as $item) {
+                $produit = $this->catalogueService->recupererProduit($item->numero);
+                $itemDTO[] = new ItemDTO(
+                    $item->id,
+                    $item->id_commande,
+                    $item->numero,
+                    $item->quantite,
+                    $produit->getPrix(),
+                    $produit->getLibelle(),
+                    $item->taille,
+                    $item->taille);
+            }
         } else {
             throw new ServiceCommandeNotFoundException("Commande not found", 404);
         }
+        return new CommandeDTO(
+            $commande->id,
+            $commande->date_commande,
+            $commande->type_livraison,
+            $commande->delai_commande,
+            $commande->etat_commande,
+            $commande->montant_commande,
+            $commande->mail_client,
+            $itemDTO);
     }
 
     /**
@@ -53,7 +69,8 @@ class CommandeService implements iCommandeService
                 $commande->delai_commande,
                 $commande->etat_commande,
                 $commande->montant_commande,
-                $commande->mail_client);
+                $commande->mail_client,
+                $commande->items_commande);
         } else {
             throw new ServiceCommandeNotFoundException("Commande not found", 404);
         }
@@ -92,7 +109,8 @@ class CommandeService implements iCommandeService
                 $commandeDTO->getDelai(),
                 $etatCommande,
                 $montantCommande,
-                $commandeDTO->getMailClient());
+                $commandeDTO->getMailClient(),
+                $itemsCommandes);
         } catch (ValidationException $e) {
             throw new ServiceCommandeNotFoundException("Commande not found", 404);
         }
