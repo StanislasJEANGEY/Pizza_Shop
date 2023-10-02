@@ -2,6 +2,8 @@
 
 namespace pizzashop\shop\domain\entities\commande;
 
+use pizzashop\shop\domain\dto\commande\ItemDTO;
+
 class Item extends \Illuminate\Database\Eloquent\Model {
     protected $connection = 'shop';
     protected $table = 'item';
@@ -11,5 +13,18 @@ class Item extends \Illuminate\Database\Eloquent\Model {
 
     public function commande() {
         return $this->belongsTo(Commande::class, 'commande_id');
+    }
+
+    public function toDTO() : ItemDTO {
+        return new ItemDTO(
+            $this->id,
+            $this->id_commande,
+            $this->numero,
+            $this->quantite,
+            $this->tarif,
+            $this->libelle,
+            $this->libelle_taille,
+            $this->taille
+        );
     }
 }

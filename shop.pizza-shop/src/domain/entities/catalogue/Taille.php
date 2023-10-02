@@ -3,6 +3,7 @@
 namespace pizzashop\shop\domain\entities\catalogue;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use pizzashop\shop\domain\dto\catalogue\TailleDTO;
 
 class Taille extends \Illuminate\Database\Eloquent\Model
 {
@@ -23,6 +24,13 @@ class Taille extends \Illuminate\Database\Eloquent\Model
     public function tarifs() : BelongsToMany {
         return $this->belongsToMany(Produit::class, 'tarif', 'taille_id', 'produit_id')
             ->withPivot('tarif');
+    }
+
+    public function toDTO(){
+        return new TailleDTO(
+            $this->id,
+            $this->libelle
+        );
     }
 
 }
