@@ -6,8 +6,9 @@ use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzaShop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
 
-class CommandeService
+class CommandeService implements iCommandeService
 {
+    protected $catalogueService;
 
     /**
      * @throws ServiceCommandeNotFoundException
@@ -47,6 +48,29 @@ class CommandeService
         } else {
             throw new ServiceCommandeNotFoundException("Commande not found", 404);
         }
+    }
+
+    public function creerCommande(CommandeDTO $commandeDTO) : CommandeDTO
+    {
+        $identifiantCommande = uniqid();
+        $dateCommande = date("Y-m-d H:i:s");
+        $etatCommande = Commande::ETAT_CREE;
+        $itemsCommandes = $commandeDTO->getItems();
+        $montantCommande = 0;
+        foreach ($itemsCommandes as $item) {
+            $produit = $this->catalogueService->recupererProduit($item->getNumero());
+            $sousTotal = $produit->getPrix() * $item->getQuantite();
+            $montantCommande += $sousTotal;
+        }
+        return new CommandeDTO(
+            $identifiantCommande,
+            $dateCommande,
+            $commandeDTO->getTypeLivraison(),
+            $commandeDTO->getDelai(),
+            $etatCommande,
+            $montantCommande,
+            $commandeDTO->getMailClient(),
+            $itemsCommandes);
     }
 }
 

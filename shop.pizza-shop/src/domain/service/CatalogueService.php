@@ -3,7 +3,6 @@
 namespace pizzashop\shop\domain\service;
 
 use pizzashop\shop\Exception\ServiceCatalogueNotFoundException;
-use pizzashop\shop\domain\entities\catalogue\iCatalogueService;
 use pizzashop\shop\domain\entities\catalogue\Produit;
 use pizzashop\shop\domain\dto\catalogue\ProduitDTO;
 
