@@ -4,9 +4,13 @@ namespace pizzashop\shop\tests\commande;
 
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
-use pizzashop\shop\shop\domain\entities\commande\Commande;
-use pizzashop\shop\shop\domain\entities\commande\Item;
+use pizzaShop\shop\domain\entities\commande\Commande;
+use pizzaShop\shop\domain\entities\commande\Item;
 use Illuminate\Database\Capsule\Manager as DB;
+use pizzashop\shop\domain\service\CatalogueService as CatalogueService;
+use pizzashop\shop\domain\service\CommandeService as CommandeService;
+use pizzashop\shop\domain\dto\commande\CommandeDTO as CommandeDTO;
+use pizzashop\shop\Exception\ServiceCommandeNotFoundException as ServiceCommandeNotFoundException;
 
 class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
 
@@ -19,7 +23,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
-        $dbcom = __DIR__ . '/../../config/commande.db.test.ini';
+        $dbcom = __DIR__ . '/../../config/commande.db.ini';
         $dbcat = __DIR__ . '/../../config/catalog.db.ini';
         $db = new DB();
         $db->addConnection(parse_ini_file($dbcom), 'commande');
@@ -27,8 +31,8 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
         $db->setAsGlobal();
         $db->bootEloquent();
 
-        self::$serviceProduits = new \pizzashop\shop\shop\domain\service\catalogue\ServiceCatalogue();
-        self::$serviceCommande = new \pizzashop\shop\shop\domain\service\commande\ServiceCommande(self::$serviceProduits);
+        self::$serviceProduits = new CatalogueService();
+        self::$serviceCommande = new CommandeService(self::$serviceProduits);
         self::$faker = Factory::create('fr_FR');
         self::fill();
 
@@ -55,17 +59,58 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
     }
 
 
-    public function testAccederCommande(){
-        //$id = self::$commandeIds[0];
-        foreach (self::$commandeIds as $id){
-            $commandeEntity = Commande::find($id);
-            $commandeDTO = self::$serviceCommande->accederCommande($id);
-            $this->assertNotNull($commandeDTO);
- 
-            // TODO : comparer les données de l'entité et du DTO
+//    public function testAccederCommande(){
+//        //$id = self::$commandeIds[0];
+//        foreach (self::$commandeIds as $id){
+//            $commandeEntity = Commande::find($id);
+//            $commandeDTO = self::$serviceCommande->accederCommande($id);
+//            $this->assertNotNull($commandeDTO);
+//
+//            // TODO : comparer les données de l'entité et du DTO
+//        }
+//    }
+
+
+    public function testAccederCommande()
+    {
+        // Créez une commande fictive pour tester l'accès
+        $commande = new Commande();
+        $commande->id = 'commande_id';
+        $commande->date_commande = '2023-10-02';
+        $commande->type_livraison = 'livraison';
+        $commande->delai_commande = 30;
+        $commande->etat_commande = 'en_attente';
+        $commande->montant_commande = 25.99;
+        $commande->mail_client = 'client@example.com';
+        $commande->save();
+
+        try {
+            // Appelez la méthode accederCommande pour obtenir le DTO
+            $commandeDTO = self::$serviceCommande->accederCommande('commande_id');
+
+            // Vérifiez si le DTO a été créé correctement
+            $this->assertInstanceOf(CommandeDTO::class, $commandeDTO);
+            $this->assertEquals('commande_id', $commandeDTO->getId());
+            $this->assertEquals('2023-10-02', $commandeDTO->getDateCommande());
+            $this->assertEquals('livraison', $commandeDTO->getTypeLivraison());
+            $this->assertEquals(30, $commandeDTO->getDelaiCommande());
+            $this->assertEquals('en_attente', $commandeDTO->getEtatCommande());
+            $this->assertEquals(25.99, $commandeDTO->getMontantCommande());
+            $this->assertEquals('client@example.com', $commandeDTO->getMailClient());
+
+        } catch (ServiceCommandeNotFoundException $e) {
+            // Si une exception est lancée, le test échouera
+            $this->fail("ServiceCommandeNotFoundException ne devrait pas être levée ici.");
         }
 
-
+        // Nettoyez la commande fictive après le test
+        $commande->delete();
     }
 
+    public function testAccederCommandeCommandeNotFound()
+    {
+        // Essayez d'accéder à une commande qui n'existe pas
+        $this->expectException(ServiceCommandeNotFoundException::class);
+        self::$serviceCommande->accederCommande('commande_inexistante');
+    }
 }
