@@ -3,6 +3,12 @@ namespace pizzashop\shop\domain\dto\commande;
 
 use pizzashop\shop\domain\dto\DTO;
 
+/**
+ * @method getTypeLivraison()
+ * @method getDelai()
+ * @method getMailClient()
+ * @method getItems()
+ */
 class CommandeDTO extends DTO{
 
     public int $numero_commande;
