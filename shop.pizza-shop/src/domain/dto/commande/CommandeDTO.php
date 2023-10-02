@@ -11,7 +11,7 @@ use pizzashop\shop\domain\dto\DTO;
  */
 class CommandeDTO extends DTO{
 
-    public int $numero_commande;
+    public int $id_commande;
     public string $date_commande;
     public int $type_livraison;
     public int $delai_commande;
@@ -20,9 +20,9 @@ class CommandeDTO extends DTO{
     public string $mail_client;
     public array $items_commande;
 
-    public function __construct(int $numero_commande, string $date_commande, int $type_livraison, int $delai_commande, int $etat_commande, float $montant_commande, string $mail_client)
+    public function __construct(int $id_commande, string $date_commande, int $type_livraison, int $delai_commande, int $etat_commande, float $montant_commande, string $mail_client)
     {
-        $this->numero_commande = $numero_commande;
+        $this->id_commande = $id_commande;
         $this->date_commande = $date_commande;
         $this->type_livraison = $type_livraison;
         $this->delai_commande = $delai_commande;

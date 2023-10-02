@@ -3,6 +3,7 @@
 namespace pizzashop\shop\domain\entities\catalogue;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use pizzashop\shop\domain\dto\catalogue\TarifDTO;
 
 class Tarif extends \Illuminate\Database\Eloquent\Model {
 
@@ -19,6 +20,14 @@ class Tarif extends \Illuminate\Database\Eloquent\Model {
 
     public function taille() : BelongsTo {
         return $this->belongsTo(Taille::class, 'taille_id');
+    }
+
+    public function toDTO(){
+        return new TarifDTO(
+            $this->produit_id,
+            $this->taille_id,
+            $this->tarif
+        );
     }
 
 }

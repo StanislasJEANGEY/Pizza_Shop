@@ -5,6 +5,7 @@ namespace pizzashop\shop\domain\entities\catalogue;
 use Illuminate\database\eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use pizzashop\shop\domain\dto\catalogue\ProduitDTO;
 
 class Produit extends Model
 {
@@ -31,4 +32,18 @@ class Produit extends Model
             ->withPivot('tarif');
     }
 
+    public function toDTO(): ProduitDTO
+    {
+        return new ProduitDTO(
+            $this->numero,
+            $this->libelle,
+            $this->categorie->libelle,
+            $this->tailles->map(function ($taille) {
+                return $taille->libelle;
+            }),
+            $this->tarifs->map(function ($tarif) {
+                return $tarif->pivot->tarif;
+            })
+        );
+    }
 }

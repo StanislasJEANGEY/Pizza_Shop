@@ -6,7 +6,7 @@ use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzaShop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
 
-class CommandeService
+class CommandeService implements iCommandeService
 {
     protected $catalogueService;
 
