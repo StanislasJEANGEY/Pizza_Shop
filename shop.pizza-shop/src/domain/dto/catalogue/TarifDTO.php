@@ -13,7 +13,7 @@ class TarifDTO
      * @param int $taille_id
      * @param float $tarif
      */
-    public function __construct(mixed $produit_id, mixed $taille_id, mixed $tarif)
+    public function __construct(int $produit_id, int $taille_id, float $tarif)
     {
         $this->produit_id = $produit_id;
         $this->taille_id = $taille_id;
