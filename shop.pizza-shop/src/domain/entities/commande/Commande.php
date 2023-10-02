@@ -7,7 +7,7 @@ class Commande extends \Illuminate\Database\Eloquent\Model {
     protected $table = 'commande';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    protected $fillable = [ 'delai', 'date_commande', 'type_livraison', 'etat', 'montant_total', 'mail_client'];
+    protected $fillable = ['delai', 'date_commande', 'type_livraison', 'etat', 'montant_total', 'mail_client'];
 
     const ETAT_CREE = 1;
     const ETAT_VALIDE = 2;
