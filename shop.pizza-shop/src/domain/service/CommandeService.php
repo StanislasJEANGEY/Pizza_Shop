@@ -2,13 +2,20 @@
 
 namespace pizzashop\shop\domain\service;
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzaShop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
 
 class CommandeService implements iCommandeService
 {
-    protected $catalogueService;
+    protected iCatalogueService $catalogueService;
+
+    public function __construct(iCatalogueService $catalogueService)
+    {
+        $this->catalogueService = $catalogueService;
+    }
 
     /**
      * @throws ServiceCommandeNotFoundException
@@ -69,8 +76,15 @@ class CommandeService implements iCommandeService
             $commandeDTO->getDelai(),
             $etatCommande,
             $montantCommande,
-            $commandeDTO->getMailClient(),
-            $itemsCommandes);
+            $commandeDTO->getMailClient());
+    }
+
+    public function loggin(CommandeDTO $commandeDTO) : CommandeDTO
+    {
+        $logger = new Logger('Commande');
+        $logger->pushHandler(new StreamHandler('Commande.log', Logger::INFO));
+        $logger->info('Commande créée', ['id' => $commandeDTO->getIdCommande()]);
+        return $commandeDTO;
     }
 }
 

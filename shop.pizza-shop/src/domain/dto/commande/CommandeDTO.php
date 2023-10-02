@@ -8,6 +8,7 @@ use pizzashop\shop\domain\dto\DTO;
  * @method getDelai()
  * @method getMailClient()
  * @method getItems()
+ * @method getIdCommande()
  */
 class CommandeDTO extends DTO{
 
