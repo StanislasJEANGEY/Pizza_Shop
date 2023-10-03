@@ -86,11 +86,11 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
 
         try {
             // Appelez la méthode accederCommande pour obtenir le DTO
-            $commandeDTO = self::$serviceCommande->accederCommande('commande_id');
+            $commandeDTO = self::$serviceCommande->accederCommande('commande_id', );
 
             // Vérifiez si le DTO a été créé correctement
             $this->assertInstanceOf(CommandeDTO::class, $commandeDTO);
-            $this->assertEquals('commande_id', $commandeDTO->getId());
+            $this->assertEquals('commande_id', $commandeDTO->getIdCommande());
             $this->assertEquals('2023-10-02', $commandeDTO->getDateCommande());
             $this->assertEquals('livraison', $commandeDTO->getTypeLivraison());
             $this->assertEquals(30, $commandeDTO->getDelaiCommande());
