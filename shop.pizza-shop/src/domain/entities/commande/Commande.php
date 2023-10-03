@@ -5,7 +5,7 @@ use pizzashop\shop\domain\dto\commande\CommandeDTO;
 
 class Commande extends \Illuminate\Database\Eloquent\Model {
 
-    protected $connection = 'shop';
+    protected $connection = 'commande';
     protected $table = 'commande';
     protected $primaryKey = 'id';
     public $timestamps = false;
@@ -33,7 +33,8 @@ class Commande extends \Illuminate\Database\Eloquent\Model {
             $this->delai,
             $this->etat,
             $this->montant_total,
-            $this->mail_client
+            $this->mail_client,
+            []
         );
     }
 }
