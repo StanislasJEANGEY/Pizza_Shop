@@ -2,13 +2,15 @@
 
 namespace pizzashop\shop\domain\dto\catalogue;
 
+use pizzashop\shop\domain\dto\DTO;
+
 /**
  * @method getPrix()
  * @method getLibelle()
  * @method getDescription()
  * @method getImage()
  */
-class ProduitDTO extends \pizzashop\shop\shop\domain\dto\DTO
+class ProduitDTO extends DTO
 {
 
     public int $numero_produit;

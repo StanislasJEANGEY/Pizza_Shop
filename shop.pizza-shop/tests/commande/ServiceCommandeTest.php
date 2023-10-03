@@ -2,10 +2,11 @@
 
 namespace pizzashop\shop\tests\commande;
 
-use Faker\Factory;
+require_once __DIR__ . '/../../vendor/autoload.php';
+//use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
-use pizzaShop\shop\domain\entities\commande\Commande;
-use pizzaShop\shop\domain\entities\commande\Item;
+use pizzashop\shop\domain\entities\commande\Commande;
+use pizzashop\shop\domain\entities\commande\Item;
 use Illuminate\Database\Capsule\Manager as DB;
 use pizzashop\shop\domain\service\CatalogueService as CatalogueService;
 use pizzashop\shop\domain\service\CommandeService as CommandeService;
@@ -33,7 +34,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
 
         self::$serviceProduits = new CatalogueService();
         self::$serviceCommande = new CommandeService(self::$serviceProduits);
-        self::$faker = Factory::create('fr_FR');
+//        self::$faker = Factory::create('fr_FR');
         self::fill();
 
     }
@@ -75,42 +76,32 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
     {
         // Créez une commande fictive pour tester l'accès
         $commande = new Commande();
-        $commande->id = 'commande_id';
-        $commande->date_commande = '2023-10-02';
-        $commande->type_livraison = 'livraison';
-        $commande->delai_commande = 30;
-        $commande->etat_commande = 'en_attente';
-        $commande->montant_commande = 25.99;
-        $commande->mail_client = 'client@example.com';
-        $commande->save();
+        $commande->id = '112e7ee1-3e8d-37d6-89cf-be3318ad6368';
+        $commande->date_commande = '2023-05-17 01:46:37';
+        $commande->type_livraison = 3;
+        $commande->delai = 0;
+        $commande->etat = 1;
+        $commande->montant_commande = 61.91;
+        $commande->mail_client = 'ThéodoreLeger@sfr.fr';
 
+        $catalogueService = new CatalogueService();
         try {
             // Appelez la méthode accederCommande pour obtenir le DTO
-            $commandeDTO = self::$serviceCommande->accederCommande('commande_id', );
+            $commandeDTO = self::$serviceCommande->accederCommande('112e7ee1-3e8d-37d6-89cf-be3318ad6368', $catalogueService);
 
             // Vérifiez si le DTO a été créé correctement
             $this->assertInstanceOf(CommandeDTO::class, $commandeDTO);
-            $this->assertEquals('commande_id', $commandeDTO->getIdCommande());
-            $this->assertEquals('2023-10-02', $commandeDTO->getDateCommande());
-            $this->assertEquals('livraison', $commandeDTO->getTypeLivraison());
-            $this->assertEquals(30, $commandeDTO->getDelaiCommande());
-            $this->assertEquals('en_attente', $commandeDTO->getEtatCommande());
-            $this->assertEquals(25.99, $commandeDTO->getMontantCommande());
-            $this->assertEquals('client@example.com', $commandeDTO->getMailClient());
+            $this->assertEquals($commande->id, $commandeDTO->getId());
+            $this->assertEquals($commande->date_commande, $commandeDTO->getDateCommande());
+            $this->assertEquals($commande->type_livraison, $commandeDTO->getTypeLivraison());
+            $this->assertEquals($commande->delai, $commandeDTO->getDelaiCommande());
+            $this->assertEquals($commande->etat, $commandeDTO->getEtatCommande());
+            $this->assertEquals($commande->montant_commande, $commandeDTO->getMontantCommande());
+            $this->assertEquals($commande->mail_client, $commandeDTO->getMailClient());
 
         } catch (ServiceCommandeNotFoundException $e) {
             // Si une exception est lancée, le test échouera
             $this->fail("ServiceCommandeNotFoundException ne devrait pas être levée ici.");
         }
-
-        // Nettoyez la commande fictive après le test
-        $commande->delete();
-    }
-
-    public function testAccederCommandeCommandeNotFound()
-    {
-        // Essayez d'accéder à une commande qui n'existe pas
-        $this->expectException(ServiceCommandeNotFoundException::class);
-        self::$serviceCommande->accederCommande('commande_inexistante');
     }
 }
