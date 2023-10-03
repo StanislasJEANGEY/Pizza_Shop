@@ -6,30 +6,24 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\dto\commande\ItemDTO;
-use pizzaShop\shop\domain\entities\commande\Commande;
+use pizzashop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
 use Respect\Validation\Exceptions\ValidationException;
 use Respect\Validation\Validator as v;
 
 class CommandeService implements iCommandeService
 {
-    protected iCatalogueService $catalogueService;
-
-    public function __construct(iCatalogueService $catalogueService)
-    {
-        $this->catalogueService = $catalogueService;
-    }
 
     /**
      * @throws ServiceCommandeNotFoundException
      */
-    public function accederCommande(string $uuid_commande) : CommandeDTO
+    public function accederCommande(string $uuid_commande, iCatalogueService $catalogueService) : CommandeDTO
     {
         if ($commande = Commande::find($uuid_commande)) {
             $itemsCommandes = $commande->items;
             $itemDTO = [];
             foreach ($itemsCommandes as $item) {
-                $produit = $this->catalogueService->recupererProduit($item->numero);
+                $produit = $catalogueService->recupererProduit($item->numero);
                 $itemDTO[] = new ItemDTO(
                     $item->id,
                     $item->id_commande,
@@ -79,7 +73,7 @@ class CommandeService implements iCommandeService
     /**
      * @throws ServiceCommandeNotFoundException
      */
-    public function creerCommande(CommandeDTO $commandeDTO) : CommandeDTO
+    public function creerCommande(CommandeDTO $commandeDTO, iCatalogueService $catalogueService) : CommandeDTO
     {
         try {
             $validator = v::arrayType()
@@ -98,7 +92,7 @@ class CommandeService implements iCommandeService
             $itemsCommandes = $commandeDTO->getItems();
             $montantCommande = 0;
             foreach ($itemsCommandes as $item) {
-                $produit = $this->catalogueService->recupererProduit($item->getNumero());
+                $produit = $catalogueService->recupererProduit($item->getNumero());
                 $sousTotal = $produit->getPrix() * $item->getQuantite();
                 $montantCommande += $sousTotal;
             }

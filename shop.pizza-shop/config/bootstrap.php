@@ -1,14 +1,17 @@
 <?php
 
 
-use pizzashop\shop\Eloquent;
+use Illuminate\Database\Capsule\Manager as Eloquent;
 use Slim\Factory\AppFactory as Factory;
 
 $app = Factory::create();
 $app->addRoutingMiddleware();
 $app->addErrorMiddleware(true, false, false);
 
-Eloquent::init(__DIR__ . '/commande.db.ini');
-Eloquent::init(__DIR__ . '/catalogue.db.ini');
+$eloquent = new Eloquent();
+$eloquent->addConnection(parse_ini_file(__DIR__ . '/commande.db.ini'), 'commande');
+$eloquent->addConnection(parse_ini_file(__DIR__ . '/catalog.db.ini'), 'catalog');
+$eloquent->setAsGlobal();
+$eloquent->bootEloquent();
 
 return $app;

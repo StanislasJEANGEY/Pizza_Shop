@@ -3,24 +3,18 @@ namespace pizzashop\shop\domain\dto\commande;
 
 use pizzashop\shop\domain\dto\DTO;
 
-/**
- * @method getTypeLivraison()
- * @method getDelai()
- * @method getMailClient()
- * @method getItems()
- * @method getIdCommande()
- * @method toArray()
- */
+
 class CommandeDTO extends DTO{
 
-    public int $id_commande;
-    public string $date_commande;
-    public int $type_livraison;
-    public int $delai_commande;
-    public int $etat_commande;
-    public float $montant_commande;
-    public string $mail_client;
-    public array $items_commande;
+    private int $id_commande;
+    private string $date_commande;
+    private int $type_livraison;
+    private int $delai_commande;
+    private int $etat_commande;
+    private float $montant_commande;
+    private string $mail_client;
+    private array $items_commande;
+
 
     public function __construct(int $id_commande, string $date_commande, int $type_livraison, int $delai_commande, int $etat_commande, float $montant_commande, string $mail_client, array $items_commande)
     {
@@ -34,4 +28,43 @@ class CommandeDTO extends DTO{
         $this->items_commande = $items_commande;
     }
 
+    public function getIdCommande(): int
+    {
+        return $this->id_commande;
+    }
+
+    public function getDateCommande(): string
+    {
+        return $this->date_commande;
+    }
+
+    public function getTypeLivraison(): int
+    {
+        return $this->type_livraison;
+    }
+
+    public function getDelaiCommande(): int
+    {
+        return $this->delai_commande;
+    }
+
+    public function getEtatCommande(): int
+    {
+        return $this->etat_commande;
+    }
+
+    public function getMontantCommande(): float
+    {
+        return $this->montant_commande;
+    }
+
+    public function getMailClient(): string
+    {
+        return $this->mail_client;
+    }
+
+    public function getItemsCommande(): array
+    {
+        return $this->items_commande;
+    }
 }

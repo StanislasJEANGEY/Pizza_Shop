@@ -10,7 +10,25 @@ class Accueil extends AbstractAction
 {
     function __invoke(Request $request, Response $response, array $args): Response
     {
-        $response->getBody()->write('Hello world!');
-        return $response->withStatus(200)->withHeader('Content-Type', 'text/html');
+//        $link = "http://docketu.iutnc.univ-lorraine.fr:18070";
+        $link = "http://pizzashop/";
+        $data = [
+            "API" => "Cette API est l'API de notre projet de PizzaShop",
+            "links" => [
+                [
+                    "href" => $link.'/commandes/{id-commande}',
+                    "method" => "GET",
+                    "description" => "Récupère les informations d'une commande."
+                ]
+            ]
+        ];
+
+        $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $data = str_replace('\/', '/', $data);
+
+        $response->getBody()->write($data);
+        return $response->withHeader('Content-Type', 'application/json')
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withStatus(200);
     }
 }
