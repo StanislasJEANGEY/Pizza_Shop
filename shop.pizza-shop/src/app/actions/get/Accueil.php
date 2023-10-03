@@ -16,9 +16,19 @@ class Accueil extends AbstractAction
             "API" => "Cette API est l'API de notre projet de PizzaShop",
             "links" => [
                 [
-                    "href" => $link.'/commandes/{id-commande}',
+                    "href" => $link . '/commandes/{id-commande}',
                     "method" => "GET",
                     "description" => "Récupère les informations d'une commande."
+                ]
+            ],
+            [
+                "API" => "Cette API est l'API de notre projet de PizzaShop",
+                "links" => [
+                    [
+                        "href" => $link . '/commandes/{id-commande}',
+                        "method" => "PATCH",
+                        "description" => "Valide une commande."
+                    ]
                 ]
             ]
         ];

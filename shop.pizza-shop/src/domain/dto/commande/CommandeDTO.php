@@ -67,4 +67,28 @@ class CommandeDTO extends DTO{
     {
         return $this->items_commande;
     }
+
+    public function getItems(): array
+    {
+        return $this->items_commande;
+    }
+
+    public function getDelai(): int
+    {
+        return $this->delai_commande;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            "id_commande" => $this->id_commande,
+            "date_commande" => $this->date_commande,
+            "type_livraison" => $this->type_livraison,
+            "delai_commande" => $this->delai_commande,
+            "etat_commande" => $this->etat_commande,
+            "montant_commande" => $this->montant_commande,
+            "mail_client" => $this->mail_client,
+            "items_commande" => $this->items_commande
+        ];
+    }
 }
