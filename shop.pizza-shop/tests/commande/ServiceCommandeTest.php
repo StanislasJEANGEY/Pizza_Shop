@@ -34,7 +34,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
 
         self::$serviceProduits = new CatalogueService();
         self::$serviceCommande = new CommandeService(self::$serviceProduits);
-//        self::$faker = Factory::create('fr_FR');
+//      self::$faker = Factory::create('fr_FR');
         self::fill();
 
     }
