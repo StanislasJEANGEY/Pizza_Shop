@@ -23,16 +23,17 @@ class CommandeService implements iCommandeService
             $itemsCommandes = $commande->items;
             $itemDTO = [];
             foreach ($itemsCommandes as $item) {
+                $idCommande = $item->commande_id;
                 $produit = $catalogueService->recupererProduit($item->numero);
                 $itemDTO[] = new ItemDTO(
                     $item->id,
-                    $item->id_commande,
+                    $idCommande,
                     $item->numero,
                     $item->quantite,
                     $produit->getTarif(),
                     $produit->getLibelleProduit(),
                     $item->taille,
-                    $item->taille);
+                    $produit->getLibelleTaille($item->taille));
             }
         } else {
             throw new ServiceCommandeNotFoundException("Commande not found", 404);
