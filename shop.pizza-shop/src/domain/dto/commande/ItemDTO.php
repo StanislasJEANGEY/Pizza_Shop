@@ -7,7 +7,7 @@ use pizzashop\shop\domain\dto\DTO;
 class ItemDTO extends DTO{
 
     public int $id_items;
-    public int $id_commande;
+    public string $id_commande;
     public int $numero_produit;
     public int $quantite_items;
     public float $tarif_items;
