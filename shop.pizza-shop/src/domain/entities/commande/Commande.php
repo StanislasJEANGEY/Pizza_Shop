@@ -20,12 +20,13 @@ class Commande extends \Illuminate\Database\Eloquent\Model {
     const LIVRAISON_A_EMPORTER = 2;
     const LIVRAISON_A_DOMICILE = 3;
 
-    public function items()
+    public function items(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Item::class, 'commande_id');
     }
 
-    public function toDTO(){
+    public function toDTO(): CommandeDTO
+    {
         return new CommandeDTO(
             $this->id,
             $this->date_commande,
