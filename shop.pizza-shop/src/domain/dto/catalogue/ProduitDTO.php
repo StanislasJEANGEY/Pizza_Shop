@@ -5,8 +5,6 @@ namespace pizzashop\shop\domain\dto\catalogue;
 use pizzashop\shop\domain\dto\DTO;
 
 /**
- * @method getPrix()
- * @method getLibelle()
  * @method getDescription()
  * @method getImage()
  */
