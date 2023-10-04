@@ -2,10 +2,10 @@
 
 namespace pizzashop\shop\tests\commande;
 
-use Faker\Factory;
+//use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
-use pizzaShop\shop\domain\entities\commande\Commande;
-use pizzaShop\shop\domain\entities\commande\Item;
+use pizzashop\shop\domain\entities\commande\Commande;
+use pizzashop\shop\domain\entities\commande\Item;
 use Illuminate\Database\Capsule\Manager as DB;
 use pizzashop\shop\domain\service\CatalogueService as CatalogueService;
 use pizzashop\shop\domain\service\CommandeService as CommandeService;
@@ -33,7 +33,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
 
         self::$serviceProduits = new CatalogueService();
         self::$serviceCommande = new CommandeService(self::$serviceProduits);
-        self::$faker = Factory::create('fr_FR');
+//        self::$faker = Factory::create('fr_FR');
         self::fill();
 
     }

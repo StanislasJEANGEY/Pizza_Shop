@@ -2,13 +2,14 @@
 
 namespace pizzashop\shop\domain\dto\catalogue;
 
+use pizzashop\shop\domain\dto\DTO;
 /**
  * @method getPrix()
  * @method getLibelle()
  * @method getDescription()
  * @method getImage()
  */
-class ProduitDTO extends \pizzashop\shop\shop\domain\dto\DTO
+class ProduitDTO extends DTO
 {
 
     public int $numero_produit;
@@ -25,6 +26,35 @@ class ProduitDTO extends \pizzashop\shop\shop\domain\dto\DTO
         $this->libelle_taille = $libelle_taille;
         $this->tarif = $tarif;
     }
+
+    public function getNumeroProduit(): int
+    {
+        return $this->numero_produit;
+    }
+
+    public function getLibelleProduit(): string
+    {
+        return $this->libelle_produit;
+    }
+
+    public function getLibelleCategorie(): string
+    {
+        return $this->libelle_categorie;
+    }
+
+    public function getLibelleTaille(): string
+    {
+        return $this->libelle_taille;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTarif()
+    {
+        return $this->tarif;
+    }
+
 
 
 

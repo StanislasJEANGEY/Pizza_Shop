@@ -15,7 +15,7 @@ class ItemDTO extends DTO{
     public string $libelle_taille;
     public int $taille_items;
 
-    public function __construct(int $id_items, int $id_commande, int $numero_produit, int $quantite_items, float $tarif_items, string $libelle_items, string $libelle_taille, int $taille_items)
+    public function __construct(int $id_items, string $id_commande, int $numero_produit, int $quantite_items, float $tarif_items, string $libelle_items, string $libelle_taille, int $taille_items)
     {
         $this->id_items = $id_items;
         $this->id_commande = $id_commande;
@@ -26,5 +26,47 @@ class ItemDTO extends DTO{
         $this->libelle_taille = $libelle_taille;
         $this->taille_items = $taille_items;
     }
+
+    public function getIdItems(): int
+    {
+        return $this->id_items;
+    }
+
+    public function getIdCommande(): int
+    {
+        return $this->id_commande;
+    }
+
+    public function getNumeroProduit(): int
+    {
+        return $this->numero_produit;
+    }
+
+    public function getQuantiteItems(): int
+    {
+        return $this->quantite_items;
+    }
+
+    public function getTarifItems(): float
+    {
+        return $this->tarif_items;
+    }
+
+    public function getLibelleItems(): string
+    {
+        return $this->libelle_items;
+    }
+
+    public function getLibelleTaille(): string
+    {
+        return $this->libelle_taille;
+    }
+
+    public function getTailleItems(): int
+    {
+        return $this->taille_items;
+    }
+
+
 
 }
