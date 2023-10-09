@@ -30,8 +30,8 @@ class CommandeService implements iCommandeService
                     $idCommande,
                     $item->numero,
                     $item->quantite,
-                    $produit->getTarif(),
-                    $produit->getLibelleProduit(),
+                    $produit->getPrix(),
+                    $produit->getLibelle(),
                     $item->taille,
                     $produit->getLibelleTaille($item->taille));
             }
