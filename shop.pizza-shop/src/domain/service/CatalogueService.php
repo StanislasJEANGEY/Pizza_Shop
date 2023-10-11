@@ -13,7 +13,8 @@ class CatalogueService implements iCatalogueService
      */
     public function recupererProduit(int $numero_produit): ProduitDTO
     {
-        if (Produit::where('numero', $numero_produit)->exists()) {$produit = Produit::where('numero', $numero_produit)
+        if (Produit::where('numero', $numero_produit)->exists()) {
+            $produit = Produit::where('numero', $numero_produit)
             ->with(['categorie', 'tarifs' => function ($query) {
                 $query->where('taille_id', 1);
             }])

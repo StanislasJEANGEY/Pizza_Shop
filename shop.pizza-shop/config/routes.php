@@ -7,11 +7,15 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 return function( \Slim\App $app):void {
 
+    // Accueil
     $app->get('/', \pizzashop\shop\app\actions\get\Accueil::class)
         ->setName('get-accueil');
 
-    $app->get('/commandes/{id_commande}', pizzashop\shop\app\actions\get\Commande::class)
-        ->setName('get-commande');
+    // accederCommande()
+    $app->get('/commandes/{id_commande}', pizzashop\shop\app\actions\get\AccederCommande::class)
+        ->setName('get-acceder_commande');
 
-
+    // validerCommande()
+    $app->patch('/commandes/{id_commande}', pizzashop\shop\app\actions\get\ValiderCommande::class)
+        ->setName('patch-valider_commande');
 };

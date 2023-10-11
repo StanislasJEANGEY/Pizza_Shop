@@ -25,17 +25,16 @@ class Commande extends \Illuminate\Database\Eloquent\Model {
         return $this->hasMany(Item::class, 'commande_id');
     }
 
-    public function toDTO(): CommandeDTO
+    public function toDTO(array $items_commande = []): CommandeDTO
     {
         return new CommandeDTO(
             $this->id,
             $this->date_commande,
             $this->type_livraison,
             $this->delai,
-            $this->etat,
             $this->montant_total,
             $this->mail_client,
-            []
+            $items_commande
         );
     }
 }

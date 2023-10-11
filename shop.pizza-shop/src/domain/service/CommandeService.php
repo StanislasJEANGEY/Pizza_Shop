@@ -9,7 +9,9 @@ use pizzashop\shop\domain\dto\commande\ItemDTO;
 use pizzashop\shop\domain\entities\catalogue\Taille;
 use pizzashop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\domain\entities\commande\Item;
+use pizzashop\shop\Exception\ServiceCatalogueNotFoundException;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
+use pizzashop\shop\Exception\ServiceValidatorException;
 use Respect\Validation\Exceptions\ValidationException;
 use Respect\Validation\Validator as v;
 
@@ -17,25 +19,25 @@ class CommandeService implements iCommandeService
 {
 
     /**
+     * @throws ServiceCatalogueNotFoundException
      * @throws ServiceCommandeNotFoundException
      */
-    public function accederCommande(string $uuid_commande, iCatalogueService $catalogueService): CommandeDTO
+    public function accederCommande(string $uuid_commande): CommandeDTO
     {
+        $catalogueService = new CatalogueService();
         if ($commande = Commande::find($uuid_commande)) {
-            $itemsCommandes = $commande->items;
-            $itemDTO = [];
-            foreach ($itemsCommandes as $item) {
-                $idCommande = $item->commande_id;
-                $produit = $catalogueService->recupererProduit($item->numero);
-                $itemDTO[] = new ItemDTO(
-                    $item->id,
-                    $idCommande,
-                    $item->numero,
-                    $item->quantite,
+            $itemEntitiessCommandes = $commande->items;
+            $itemEntitiesDTO = [];
+            foreach ($itemEntitiessCommandes as $itemEntities) {
+                $produit = $catalogueService->recupererProduit($itemEntities->numero);
+                $itemEntitiesDTO[] = new ItemDTO(
+                    $itemEntities->commande_id,
+                    $itemEntities->numero,
+                    $itemEntities->quantite,
                     $produit->getPrix(),
                     $produit->getLibelle(),
-                    $item->taille,
-                    $produit->getLibelleTaille($item->taille));
+                    $itemEntities->taille,
+                    $produit->getLibelleTaille($itemEntities->taille));
             }
         } else {
             throw new ServiceCommandeNotFoundException("Commande not found", 404);
@@ -45,48 +47,49 @@ class CommandeService implements iCommandeService
             $commande->date_commande,
             $commande->type_livraison,
             $commande->delai,
-            $commande->etat,
             $commande->montant_total,
             $commande->mail_client,
-            $itemDTO);
+            $itemEntitiesDTO);
     }
 
     /**
      * @throws ServiceCommandeNotFoundException
+     * @throws ValidationException
+     * @throws ServiceValidatorException
      */
-    public function validerCommande(string $uuid_commande)
+
+    public function validerCommande(string $uuid_commande): void
     {
         if ($commande = Commande::find($uuid_commande)) {
-            $items_commande = Item::where('commande_id', $commande->id)->get();
+            $itemEntitiess = Item::where('commande_id', $commande->id)->get();
+            $tab_items = [];
+            foreach ($itemEntitiess as $item) {
+                $tab_items[] = $item->toDTO();
+            }
+            $commandeDTO = $commande->toDTO($tab_items);
             $commandeValide = true;
-            if ($commande->etat != Commande::ETAT_VALIDE) {
-                if ($commande->mail_client == "" || filter_var($commande->mail_client, FILTER_VALIDATE_EMAIL) === false) {
-                    $commandeValide = false;
-                } else if ($commande->type_livraison == null || ($commande->type_livraison != Commande::LIVRAISON_SUR_PLACE && $commande->type_livraison != Commande::LIVRAISON_A_EMPORTER && $commande->type_livraison != Commande::LIVRAISON_A_DOMICILE)) {
-                    $commandeValide = false;
-                }
-                else if (count($items_commande) != 0) {
-                    $nb_items = count($items_commande);
-                    $i = 0;
-                    $item = $items_commande[0];
-                    while ($commandeValide == true && $item != null && $i < $nb_items) {
-                        if ($item->numero == null || $item->numero < 0 || !is_int($item->numero)) {
-                            $commandeValide = false;
-                        } else if ($item->quantite== null || $item->quantite < 0 || !is_int($item->quantite)) {
-                            $commandeValide = false;
-                        } else if ($item->taille == null || ($item->taille != Taille::NORMALE && $item->taille != Taille::GRANDE)) {
-                            $commandeValide = false;
-                        }
-                        $i++;
-                        $item = $items_commande[$i];
+
+            try {
+                if ($commande->etat != Commande::ETAT_VALIDE) {
+                    v::attribute('mail_client', v::notEmpty()->email())
+                        ->attribute('type_livraison', v::notEmpty()->in([1, 2, 3]))
+                        ->attribute('items_commande', v::notEmpty()->arrayVal()
+                            ->each(
+                                v::attribute('numero_produit', v::notEmpty()->intVal()->positive())
+                                ->attribute('quantite_items', v::notEmpty()->intVal()->positive())
+                                ->attribute('taille_items', v::notEmpty()->in([1, 2]))
+                            ))
+                        ->assert($commandeDTO);
+
+                    if ($commandeValide) {
+                        $commande->etat = Commande::ETAT_VALIDE;
+                    } else {
+                        $commande->etat = Commande::ETAT_CREE;
                     }
+                    $commande->save();
                 }
-                if ($commandeValide) {
-                    $commande->etat = Commande::ETAT_VALIDE;
-                } else {
-                    $commande->etat = Commande::ETAT_CREE;
-                }
-                $commande->save();
+            } catch (ValidationException $e) {
+                throw new ServiceValidatorException($e->getFullMessage(), 500);
             }
 
         } else {
@@ -94,49 +97,62 @@ class CommandeService implements iCommandeService
         }
     }
 
+
     /**
      * @throws ServiceCommandeNotFoundException
+     * @throws ServiceValidatorException
      */
     public
-    function creerCommande(CommandeDTO $commandeDTO, iCatalogueService $catalogueService): CommandeDTO
+    function creerCommande(CommandeDTO $commandeDTO): void
     {
         try {
-            $validator = v::arrayType()
-                ->key('type_livraison', v::in(['livraison_express', 'livraison_standard']))
-                ->key('delai', v::date('Y-m-d H:i:s'))
-                ->key('items', v::notEmpty()->each(
-                    v::key('numero', v::intVal()->positive())
-                        ->key('quantite', v::intVal()->positive())
-                        ->key('taille', v::in(['petite', 'moyenne', 'grande']))
-                ));
-            $validator->assert($commandeDTO->toArray());
+            $validator = v::attribute('mail_client', v::notEmpty()->email())
+                ->attribute('type_livraison', v::notEmpty()->in([1, 2, 3]))
+                ->attribute('items_commande', v::notEmpty()->arrayVal()
+                    ->each(
+                        v::attribute('numero_produit', v::notEmpty()->intVal()->positive())
+                            ->attribute('quantite_items', v::notEmpty()->intVal()->positive())
+                            ->attribute('taille_items', v::notEmpty()->in([1, 2]))
+                    ));
+            $validator->assert($commandeDTO);
 
-            $identifiantCommande = uniqid();
-            $dateCommande = date("Y-m-d H:i:s");
-            $etatCommande = Commande::ETAT_CREE;
-            $itemsCommandes = $commandeDTO->getItems();
+            if ($commandeDTO->getIdCommande() != "" && $commandeDTO->getIdCommande() != null)
+                $itemdentifiantCommande = $commandeDTO->getIdCommande();
+            else $itemdentifiantCommande = uniqid();
+
             $montantCommande = 0;
-            foreach ($itemsCommandes as $item) {
-                $produit = $catalogueService->recupererProduit($item->getNumero());
-                $sousTotal = $produit->getPrix() * $item->getQuantite();
+            foreach ($commandeDTO->getItems() as $item) {
+                $sousTotal = $item->getTarifItems() * $item->getQuantiteItems();
                 $montantCommande += $sousTotal;
+                
+                //ajout de l'item en base
+                $itemEntities = new Item();
+                $itemEntities->numero = $item->getNumeroProduit();
+                $itemEntities->libelle = $item->getLibelleItems();
+                $itemEntities->taille = $item->getTailleItems();
+                $itemEntities->libelle_taille = $item->getLibelleTaille();
+                $itemEntities->tarif = $item->getTarifItems();
+                $itemEntities->quantite = $item->getQuantiteItems();
+                $itemEntities->commande_id = $itemdentifiantCommande;
+                $itemEntities->save();
             }
-            return new CommandeDTO(
-                $identifiantCommande,
-                $dateCommande,
-                $commandeDTO->getTypeLivraison(),
-                $commandeDTO->getDelai(),
-                $etatCommande,
-                $montantCommande,
-                $commandeDTO->getMailClient(),
-                $itemsCommandes);
+            $commande = new Commande();
+            $commande->id = $itemdentifiantCommande;
+            $commande->delai = 0;
+            $commande->date_commande = date("Y-m-d H:i:s");
+            $commande->type_livraison = $commandeDTO->getTypeLivraison();
+            $commande->etat = Commande::ETAT_CREE;;
+            $commande->montant_total = $montantCommande;
+            $commande->mail_client = $commandeDTO->getMailClient();
+            $commande->save();
+
+
         } catch (ValidationException $e) {
-            throw new ServiceCommandeNotFoundException("Commande not found", 404);
+            throw new ServiceValidatorException("Validation incorrecte", 500);
         }
     }
 
-    public
-    function loggin(CommandeDTO $commandeDTO): CommandeDTO
+    public function loggin(CommandeDTO $commandeDTO): CommandeDTO
     {
         $logger = new Logger('Commande');
         $logger->pushHandler(new StreamHandler('Commande.log', Logger::INFO));
