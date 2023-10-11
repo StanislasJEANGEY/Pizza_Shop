@@ -13,6 +13,7 @@ class ValiderCommande extends AbstractAction
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
+        //TODO finir exo 2 TD3
         $commandeService = new CommandeService();
         try {
             $commandeService->validerCommande($args['id_commande']);
