@@ -92,7 +92,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase {
 
             // Vérifiez si le DTO a été créé correctement
             $this->assertInstanceOf(CommandeDTO::class, $commandeDTO);
-            $this->assertEquals($commande->id, $commandeDTO->getId());
+            $this->assertEquals($commande->id, $commandeDTO->getIdCommande());
             $this->assertEquals($commande->date_commande, $commandeDTO->getDateCommande());
             $this->assertEquals($commande->type_livraison, $commandeDTO->getTypeLivraison());
             $this->assertEquals($commande->delai, $commandeDTO->getDelaiCommande());
