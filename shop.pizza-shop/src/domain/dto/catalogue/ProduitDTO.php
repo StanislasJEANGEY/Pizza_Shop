@@ -16,9 +16,9 @@ class ProduitDTO extends DTO{
     public string $libelle_produit;
     public string $libelle_categorie;
     public string $libelle_taille;
-    public string $tarif;
+    public float $tarif;
 
-    public function __construct(int $numero_produit, string $libelle_produit, string $libelle_categorie, string $libelle_taille, $tarif)
+    public function __construct(int $numero_produit, string $libelle_produit, string $libelle_categorie, string $libelle_taille, float $tarif)
     {
         $this->numero_produit = $numero_produit;
         $this->libelle_produit = $libelle_produit;
@@ -27,7 +27,7 @@ class ProduitDTO extends DTO{
         $this->tarif = $tarif;
     }
 
-    public function getPrix(): string
+    public function getPrix(): float
     {
         return $this->tarif;
     }

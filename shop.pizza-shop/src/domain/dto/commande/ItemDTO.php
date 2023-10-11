@@ -13,9 +13,9 @@ class ItemDTO extends DTO{
     public float $tarif_items;
     public string $libelle_items;
     public string $libelle_taille;
-    public int $taille_items;
+    public string $taille_items;
 
-    public function __construct(int $id_items, string $id_commande, int $numero_produit, int $quantite_items, float $tarif_items, string $libelle_items, string $libelle_taille, int $taille_items)
+    public function __construct(int $id_items, string $id_commande, int $numero_produit, int $quantite_items, float $tarif_items, string $libelle_items, string $libelle_taille, string $taille_items)
     {
         $this->id_items = $id_items;
         $this->id_commande = $id_commande;

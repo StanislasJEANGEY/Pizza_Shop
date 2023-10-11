@@ -11,16 +11,24 @@ class CatalogueService implements iCatalogueService
     /**
      * @throws ServiceCatalogueNotFoundException
      */
-    public function recupererProduit(int $id_produit): ProduitDTO
+    public function recupererProduit(int $numero_produit): ProduitDTO
     {
-        if (Produit::where('id', $id_produit)->exists()) {
-            $produit = Produit::find($id_produit);
+        if (Produit::where('numero', $numero_produit)->exists()) {$produit = Produit::where('numero', $numero_produit)
+            ->with(['categorie', 'tarifs' => function ($query) {
+                $query->where('taille_id', 1);
+            }])
+            ->first();
+
+            //echo '<pre>' . json_encode($produit, JSON_PRETTY_PRINT) .'<pre>' . "<br>";
+
             return new ProduitDTO(
-                $produit->id,
                 $produit->numero,
                 $produit->libelle,
-                $produit->description,
-                $produit->image);
+                $produit->categorie->libelle,
+                $produit->tailles->map(function ($taille) {
+                    return $taille->libelle;
+                }),
+                0);
         } else {
             throw new ServiceCatalogueNotFoundException("Produit not found", 404);
         }

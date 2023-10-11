@@ -42,9 +42,9 @@ class CommandeService implements iCommandeService
             $commande->id,
             $commande->date_commande,
             $commande->type_livraison,
-            $commande->delai_commande,
-            $commande->etat_commande,
-            $commande->montant_commande,
+            $commande->delai,
+            $commande->etat,
+            $commande->montant_total,
             $commande->mail_client,
             $itemDTO);
     }
