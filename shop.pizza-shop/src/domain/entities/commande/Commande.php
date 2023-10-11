@@ -16,7 +16,7 @@ class Commande extends \Illuminate\Database\Eloquent\Model {
     const ETAT_PAYE = 3;
     const ETAT_LIVRE = 4;
 
-    const LIVRAISON_SUR_PLACE = 1;
+    const LIVRAISON_SUR_PLACE  = 1;
     const LIVRAISON_A_EMPORTER = 2;
     const LIVRAISON_A_DOMICILE = 3;
 

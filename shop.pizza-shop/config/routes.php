@@ -12,4 +12,6 @@ return function( \Slim\App $app):void {
 
     $app->get('/commandes/{id_commande}', pizzashop\shop\app\actions\get\Commande::class)
         ->setName('get-commande');
+
+
 };

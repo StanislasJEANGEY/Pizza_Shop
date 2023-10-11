@@ -19,7 +19,6 @@ class CatalogueService implements iCatalogueService
             }])
             ->first();
 
-            //echo '<pre>' . json_encode($produit, JSON_PRETTY_PRINT) .'<pre>' . "<br>";
 
             return new ProduitDTO(
                 $produit->numero,
