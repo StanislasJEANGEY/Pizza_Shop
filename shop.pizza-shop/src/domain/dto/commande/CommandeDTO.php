@@ -1,12 +1,11 @@
 <?php
 namespace pizzashop\shop\domain\dto\commande;
 
-use pizzashop\shop\domain\dto\DTO;
 use pizzashop\shop\domain\entities\commande\Commande;
 use function FastRoute\cachedDispatcher;
 
 
-class CommandeDTO extends DTO{
+class CommandeDTO {
 
     private int $id_commande;
     private string $date_commande;

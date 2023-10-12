@@ -2,13 +2,12 @@
 
 namespace pizzashop\shop\domain\dto\catalogue;
 
-use pizzashop\shop\domain\dto\DTO;
 
 /**
  * @method getDescription()
  * @method getImage()
  */
-class ProduitDTO extends DTO{
+class ProduitDTO{
 
 
 

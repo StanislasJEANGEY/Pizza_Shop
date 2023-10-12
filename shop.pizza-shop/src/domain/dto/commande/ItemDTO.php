@@ -2,9 +2,8 @@
 
 namespace pizzashop\shop\domain\dto\commande;
 
-use pizzashop\shop\domain\dto\DTO;
 
-class ItemDTO extends DTO{
+class ItemDTO{
 
     public string $id_commande;
     public int $numero_produit;
