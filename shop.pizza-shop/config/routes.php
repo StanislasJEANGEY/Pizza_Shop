@@ -16,6 +16,6 @@ return function( \Slim\App $app):void {
         ->setName('get-acceder_commande');
 
     // validerCommande()
-    $app->patch('/commandes/{id_commande}', pizzashop\shop\app\actions\get\ValiderCommande::class)
+    $app->patch('/commandes/{id_commande}', pizzashop\shop\app\actions\patch\ValiderCommande::class)
         ->setName('patch-valider_commande');
 };

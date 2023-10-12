@@ -2,6 +2,7 @@
 
 namespace pizzashop\shop\app\actions\get;
 
+use Exception;
 use pizzashop\shop\app\actions\AbstractAction;
 use pizzashop\shop\domain\service\CatalogueService;
 use pizzashop\shop\domain\service\CommandeService;
@@ -19,16 +20,20 @@ class AccederCommande extends AbstractAction
             $commande = $commandeService->accederCommande($args['id_commande']);
             $data = [
                 'id' => $commande->getIdCommande(),
+                'délai' => $commande->getDelaiCommande(),
                 'date' => $commande->getDateCommande(),
-                'prix' => $commande->getMontantCommande(),
+                'type livraison' => $commande->getTypeLivraison(),
+                'état' => $commande->getEtatCommande(),
+                'montant' => $commande->getMontantCommande(),
+                'mail client' => $commande->getMailClient(),
                 'items' => $commande->getItemsCommande()
             ];
             $status = 200;
 
         } catch (ServiceCommandeNotFoundException $e){
             $data = $e->getMessage();
-            $status = 404;
-        } catch (\Exception $e){
+            $status = $e->getCode();
+        } catch (Exception $e){
             $data = $e->getMessage();
             $status = 500;
         }

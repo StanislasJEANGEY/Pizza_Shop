@@ -157,6 +157,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
             '',
             3,
             0,
+            Commande::ETAT_CREE,
             0,
             'commande@gmail.com',
             [$itemDTO1, $itemDTO2]);

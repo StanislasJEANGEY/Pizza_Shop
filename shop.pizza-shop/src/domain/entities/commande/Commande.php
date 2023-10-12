@@ -32,6 +32,7 @@ class Commande extends \Illuminate\Database\Eloquent\Model {
             $this->date_commande,
             $this->type_livraison,
             $this->delai,
+            $this->etat,
             $this->montant_total,
             $this->mail_client,
             $items_commande

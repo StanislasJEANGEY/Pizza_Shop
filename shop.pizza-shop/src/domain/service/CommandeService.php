@@ -10,6 +10,7 @@ use pizzashop\shop\domain\entities\catalogue\Taille;
 use pizzashop\shop\domain\entities\commande\Commande;
 use pizzashop\shop\domain\entities\commande\Item;
 use pizzashop\shop\Exception\ServiceCatalogueNotFoundException;
+use pizzashop\shop\Exception\ServiceCommandeInvalideException;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
 use pizzashop\shop\Exception\ServiceValidatorException;
 use Respect\Validation\Exceptions\ValidationException;
@@ -47,6 +48,7 @@ class CommandeService implements iCommandeService
             $commande->date_commande,
             $commande->type_livraison,
             $commande->delai,
+            $commande->etat,
             $commande->montant_total,
             $commande->mail_client,
             $itemEntitiesDTO);
@@ -87,6 +89,8 @@ class CommandeService implements iCommandeService
                         $commande->etat = Commande::ETAT_CREE;
                     }
                     $commande->save();
+                } else {
+                    throw new ServiceCommandeInvalideException("Commande déjà validée", 400);
                 }
             } catch (ValidationException $e) {
                 throw new ServiceValidatorException($e->getFullMessage(), 500);

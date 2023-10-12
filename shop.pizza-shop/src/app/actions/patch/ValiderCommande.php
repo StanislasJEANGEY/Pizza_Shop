@@ -5,6 +5,7 @@ namespace pizzashop\shop\app\actions\patch;
 use Exception;
 use pizzashop\shop\app\actions\AbstractAction;
 use pizzashop\shop\domain\service\CommandeService;
+use pizzashop\shop\Exception\ServiceCommandeInvalideException;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -14,32 +15,34 @@ class ValiderCommande extends AbstractAction
 {
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        $idCommande = $args['id-commande'];
+        $commandeService = new CommandeService();
         try {
-            $commandeService = new CommandeService();
-            $commande = $commandeService->validerCommande($idCommande);
+            $commandeService->validerCommande($args['id_commande']);
+            $commande = $commandeService->accederCommande($args['id_commande']);
             $data = [
                 'id' => $commande->getIdCommande(),
+                'délai' => $commande->getDelaiCommande(),
                 'date' => $commande->getDateCommande(),
-                'prix' => $commande->getMontantCommande(),
-                'statut' => $commande->getEtatCommande(),
+                'type livraison' => $commande->getTypeLivraison(),
+                'état' => $commande->getEtatCommande(),
+                'montant' => $commande->getMontantCommande(),
+                'mail client' => $commande->getMailClient(),
                 'items' => $commande->getItemsCommande()
             ];
-            $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-            $data = str_replace('\/', '/', $data);
-            $response->getBody()->write($data);
-        } catch (ServiceCommandeNotFoundException $e) {
-            $response->getBody()->write(json_encode(["message" => "Commande introuvable"], JSON_PRETTY_PRINT));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
-        } catch (ValidationException $e) {
-            $response->getBody()->write(json_encode(["message" => "La commande est déjà validée"], JSON_PRETTY_PRINT));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+            $status = 200;
+        } catch (ServiceCommandeNotFoundException|ServiceCommandeInvalideException $e) {
+            $data = $e->getMessage();
+            $status = $e->getCode();
         } catch (Exception $e) {
-            $response->getBody()->write(json_encode(["message" => "Erreur interne du serveur"], JSON_PRETTY_PRINT));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+            $data = $e->getMessage();
+            $status = 500;
         }
+        $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $data = str_replace('\/', '/', $data);
+
+        $response->getBody()->write($data);
         return $response->withHeader('Content-Type', 'application/json')
             ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withStatus(200);
+            ->withStatus($status);
     }
 }
