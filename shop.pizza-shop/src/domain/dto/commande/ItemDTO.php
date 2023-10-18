@@ -24,7 +24,7 @@ class ItemDTO{
         $this->taille_items = $taille_items;
     }
 
-    public function getIdCommande(): int
+    public function getIdCommande(): string
     {
         return $this->id_commande;
     }

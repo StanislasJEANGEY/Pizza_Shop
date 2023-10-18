@@ -7,7 +7,7 @@ use function FastRoute\cachedDispatcher;
 
 class CommandeDTO {
 
-    private int $id_commande;
+    public string $id_commande;
     private string $date_commande;
     private int $type_livraison;
     private int $delai_commande;
@@ -17,7 +17,7 @@ class CommandeDTO {
     private array $items_commande;
 
 
-    public function __construct(int $id_commande, string $date_commande, int $type_livraison, int $delai_commande, int $etat_commande, float $montant_commande, string $mail_client, array $items_commande)
+    public function __construct(string $id_commande, string $date_commande, int $type_livraison, int $delai_commande, int $etat_commande, float $montant_commande, string $mail_client, array $items_commande)
     {
         $this->id_commande = $id_commande;
         $this->date_commande = $date_commande;
@@ -29,7 +29,7 @@ class CommandeDTO {
         $this->items_commande = $items_commande;
     }
 
-    public function getIdCommande(): int
+    public function getIdCommande(): string
     {
         return $this->id_commande;
     }

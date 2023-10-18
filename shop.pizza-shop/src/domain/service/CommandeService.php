@@ -39,7 +39,7 @@ class CommandeService implements iCommandeService
                     $produit->getLibelleTaille($itemEntities->taille));
             }
         } else {
-            throw new ServiceCommandeNotFoundException("Commande not found", 404);
+            throw new ServiceCommandeNotFoundException("Commande " . $uuid_commande . " not found", 404);
         }
         return new CommandeDTO(
             $commande->id,

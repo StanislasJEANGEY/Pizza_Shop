@@ -8,6 +8,8 @@ class Commande extends \Illuminate\Database\Eloquent\Model {
     protected $connection = 'commande';
     protected $table = 'commande';
     protected $primaryKey = 'id';
+
+    protected $keyType = 'string';
     public $timestamps = false;
     protected $fillable = ['delai', 'date_commande', 'type_livraison', 'etat', 'montant_total', 'mail_client'];
 

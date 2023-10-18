@@ -53,10 +53,32 @@ class AccederCommande extends AbstractAction
             $status = 200;
 
         } catch (ServiceCommandeNotFoundException $e){
-            $data = $e->getMessage();
-            $status = $e->getCode();
-        } catch (Exception $e){
-            $data = $e->getMessage();
+            $data = [
+                'message' => '404 Not Found',
+                'exception' => [
+                    [
+                        'type' => get_class($e),
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine()
+                    ]
+                ]
+            ];
+            $status = 404;
+        } catch (Exception $e) {
+            $data = [
+                'message' => '500 Internal Server Error',
+                'exception' => [
+                    [
+                        'type' => get_class($e),
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine()
+                    ]
+                ]
+            ];
             $status = 500;
         }
 
