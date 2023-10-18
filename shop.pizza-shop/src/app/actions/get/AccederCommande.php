@@ -5,6 +5,7 @@ namespace pizzashop\shop\app\actions\get;
 use Exception;
 use pizzashop\shop\app\actions\AbstractAction;
 use pizzashop\shop\domain\service\CommandeService;
+use pizzashop\shop\domain\service\iCatalogueService;
 use pizzashop\shop\domain\service\iCommandeService;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
 use Psr\Container\ContainerInterface;
@@ -14,18 +15,20 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class AccederCommande extends AbstractAction
 {
 
-    protected iCommandeService $commandeService;
-    public function __construct(iCommandeService $service)
+    private iCommandeService $commandeService;
+    private iCatalogueService $catalogueService;
+
+    public function __construct(ContainerInterface $container, iCommandeService $s, iCatalogueService $c)
     {
-        $this->commandeService = $service;
+        parent::__construct($container);
+        $this->commandeService = $s;
+        $this->catalogueService = $c;
     }
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        //$commandeService = $this->conteneur->get('commande.service');
-
         try {
-            $commande = $this->commandeService->accederCommande($args['id_commande']);
+            $commande = $this->commandeService->accederCommande($args['id_commande'], $this->catalogueService);
             $data = [
                 'id' => $commande->getIdCommande(),
                 'délai' => $commande->getDelaiCommande(),
@@ -35,6 +38,17 @@ class AccederCommande extends AbstractAction
                 'montant' => $commande->getMontantCommande(),
                 'mail client' => $commande->getMailClient(),
                 'items' => $commande->getItemsCommande()
+            ];
+            //ajouter du json dans $data
+            $data += [
+              "links" => [
+                  "self" => [
+                      "href" => $this->container->get("link")."/commandes/".$commande->getIdCommande()
+                  ],
+                  "valider" => [
+                      "href" => "http://localhost:8000/commandes/".$commande->getIdCommande()
+                  ]
+              ]
             ];
             $status = 200;
 

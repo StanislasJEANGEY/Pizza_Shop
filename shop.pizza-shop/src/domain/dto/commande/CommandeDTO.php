@@ -85,6 +85,13 @@ class CommandeDTO {
         }
     }
 
+    public function setMailClient(string $mail_client): void
+    {
+        $this->mail_client = $mail_client;
+    }
+
+
+
 
 
 

@@ -18,14 +18,12 @@ use Respect\Validation\Validator as v;
 
 class CommandeService implements iCommandeService
 {
-
     /**
      * @throws ServiceCatalogueNotFoundException
      * @throws ServiceCommandeNotFoundException
      */
-    public function accederCommande(string $uuid_commande): CommandeDTO
+    public function accederCommande(string $uuid_commande, iCatalogueService $catalogueService): CommandeDTO
     {
-        $catalogueService = new CatalogueService();
         if ($commande = Commande::find($uuid_commande)) {
             $itemEntitiessCommandes = $commande->items;
             $itemEntitiesDTO = [];
@@ -54,6 +52,18 @@ class CommandeService implements iCommandeService
             $itemEntitiesDTO);
     }
 
+    private function normalizeEmail($email)
+    {
+        // Convertir en minuscules
+        $email = mb_strtolower($email);
+
+        // Convertir ou supprimer les accents
+        $email = \Normalizer::normalize($email, \Normalizer::FORM_D);
+        $email = preg_replace('/\p{Mn}/u', '', $email);
+
+        return $email;
+    }
+
     /**
      * @throws ServiceCommandeNotFoundException
      * @throws ValidationException
@@ -73,6 +83,7 @@ class CommandeService implements iCommandeService
 
             try {
                 if ($commande->etat != Commande::ETAT_VALIDE) {
+                    $commandeDTO->setMailClient($this->normalizeEmail($commandeDTO->getMailClient()));
                     v::attribute('mail_client', v::notEmpty()->email())
                         ->attribute('type_livraison', v::notEmpty()->in([1, 2, 3]))
                         ->attribute('items_commande', v::notEmpty()->arrayVal()

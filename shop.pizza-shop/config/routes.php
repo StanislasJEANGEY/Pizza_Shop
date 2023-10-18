@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 return function( \Slim\App $app):void {
 
     // Accueil
-    $app->get('/', \pizzashop\shop\app\actions\get\Accueil::class)
+    $app->get('[/]', \pizzashop\shop\app\actions\get\Accueil::class)
         ->setName('get-accueil');
 
     // accederCommande()
@@ -18,4 +18,7 @@ return function( \Slim\App $app):void {
     // validerCommande()
     $app->patch('/commandes/{id_commande}', pizzashop\shop\app\actions\patch\ValiderCommande::class)
         ->setName('patch-valider_commande');
+
+    $app->post('/commandes[/]', pizzashop\shop\app\actions\post\CreerCommande::class)
+        ->setName('post-creer_commande');
 };
