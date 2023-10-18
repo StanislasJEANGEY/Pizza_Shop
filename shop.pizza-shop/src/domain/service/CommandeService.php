@@ -106,8 +106,7 @@ class CommandeService implements iCommandeService
      * @throws ServiceCommandeNotFoundException
      * @throws ServiceValidatorException
      */
-    public
-    function creerCommande(CommandeDTO $commandeDTO): void
+    public function creerCommande(CommandeDTO $commandeDTO): void
     {
         try {
             $validator = v::attribute('mail_client', v::notEmpty()->email())

@@ -80,6 +80,8 @@ class CommandeDTO {
                 return "Commande payée";
             case Commande::ETAT_LIVRE:
                 return "Commande livrée";
+        default:
+            return "Etat inconnu";
         }
     }
 
