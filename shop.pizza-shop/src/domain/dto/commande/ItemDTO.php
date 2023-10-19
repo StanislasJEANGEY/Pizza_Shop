@@ -61,15 +61,17 @@ class ItemDTO{
 
     public function __toString(): string
     {
-        return "ItemDTO{" .
-            "id_commande='" . $this->id_commande . '\'' .
-            ", numero_produit=" . $this->numero_produit .
-            ", quantite_items=" . $this->quantite_items .
-            ", tarif_items=" . $this->tarif_items .
-            ", libelle_items='" . $this->libelle_items . '\'' .
-            ", libelle_taille='" . $this->libelle_taille . '\'' .
-            ", taille_items=" . $this->taille_items .
-            '}';
+        $data = [
+            'id_commande' => $this->id_commande,
+            'numero_produit' => $this->numero_produit,
+            'quantite_items' => $this->quantite_items,
+            'tarif_items' => $this->tarif_items,
+            'libelle_items' => $this->libelle_items,
+            'libelle_taille' => $this->libelle_taille,
+            'taille_items' => $this->taille_items
+        ];
+
+        return json_encode($data, JSON_PRETTY_PRINT);
     }
 
 }

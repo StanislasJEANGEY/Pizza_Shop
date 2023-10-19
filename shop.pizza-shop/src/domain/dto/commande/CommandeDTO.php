@@ -85,20 +85,20 @@ class CommandeDTO {
         }
     }
 
-    public function __toString() : string
+    public function toStr() : string
     {
-        $items = implode('', $this->items_commande);
+        $data = [
+            'id_commande' => $this->id_commande,
+            'date_commande' => $this->date_commande,
+            'type_livraison' => $this->type_livraison,
+            'delai_commande' => $this->delai_commande,
+            'etat_commande' => $this->etat_commande,
+            'montant_commande' => $this->montant_commande,
+            'mail_client' => $this->mail_client,
+            'items_commande' => $this->items_commande
+        ];
 
-        return "CommandeDTO{" .
-            "id_commande='" . $this->id_commande . '\'' .
-            ", date_commande='" . $this->date_commande . '\'' .
-            ", type_livraison=" . $this->type_livraison .
-            ", delai_commande=" . $this->delai_commande .
-            ", etat_commande=" . $this->etat_commande .
-            ", montant_commande=" . $this->montant_commande .
-            ", mail_client='" . $this->mail_client . '\'' .
-            ", items_commande=" . $items .
-            "}\n";
+        return json_encode($data, JSON_PRETTY_PRINT);
     }
 
     public function setMailClient(string $mail_client): void
