@@ -17,7 +17,7 @@ class AuthenticationProvider extends Model
      */
     public static function createUser($username, $email, $password): void
     {
-        list($passwordHash, $salt) = self::hashPassword($password);
+        $passwordHash = self::hashPassword($password);
 
         $user = new AuthenticationProvider;
         $user->username = $username;
