@@ -2,8 +2,9 @@
 
 namespace pizzashop\auth\api\domain\provider;
 
-use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Exception;
+use pizzashop\auth\api\domain\entities\User;
 
 class AuthenticationProvider extends Model
 {
@@ -17,9 +18,9 @@ class AuthenticationProvider extends Model
      */
     public static function createUser($username, $email, $password): void
     {
-        list($passwordHash, $salt) = self::hashPassword($password);
+        $passwordHash = self::hashPassword($password);
 
-        $user = new AuthenticationProvider;
+        $user = new User;
         $user->username = $username;
         $user->email = $email;
         $user->password = $passwordHash;
@@ -29,10 +30,10 @@ class AuthenticationProvider extends Model
 
     public static function authenticateWithCredentials($username, $password): bool
     {
-        $user = AuthenticationProvider::where('username', $username)->first();
+        $user = User::where('username', $username)->first();
 
         if ($user) {
-            $inputPasswordHash = hash("sha256", $password . $user->salt);
+            $inputPasswordHash = hash("sha256", $password);
 
             if ($inputPasswordHash === $user->password) {
                 return true;
@@ -44,7 +45,7 @@ class AuthenticationProvider extends Model
 
     public static function authenticateWithRefreshToken($refreshToken): ?array
     {
-        $user = AuthenticationProvider::where('refresh_token', $refreshToken)->first();
+        $user = User::where('refresh_token', $refreshToken)->first();
 
         if ($user) {
             return [$user->username, $user->email];
@@ -55,7 +56,7 @@ class AuthenticationProvider extends Model
 
     public static function getUserProfile($username): ?array
     {
-        $user = AuthenticationProvider::where('username', $username)->first();
+        $user = User::where('username', $username)->first();
 
         if ($user) {
             return ['username' => $user->username, 'email' => $user->email, 'refresh_token' => $user->refresh_token];
@@ -67,10 +68,8 @@ class AuthenticationProvider extends Model
     /**
      * @throws Exception
      */
-    private static function hashPassword($password): array
+    private static function hashPassword($password): string
     {
-        $salt = bin2hex(random_bytes(16));
-        $passwordHash = hash("sha256", $password . $salt);
-        return [$passwordHash, $salt];
+        return hash("sha256", $password);
     }
 }
