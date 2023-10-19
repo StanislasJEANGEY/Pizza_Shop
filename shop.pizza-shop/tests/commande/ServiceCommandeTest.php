@@ -166,11 +166,11 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
             [$itemDTO1, $itemDTO2]);
 
 
-        self::$commandeIds[] = '22222222';
 
         try {
 
             $id = self::$serviceCommande->creerCommande($commandeDTO);
+            self::$commandeIds[] = $id;
 
             //tester si la commande est bien créée
             $commande = Commande::find($id);
@@ -180,7 +180,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
             $this->assertEquals(15.97, $commande->montant_total);
             $this->assertEquals("commande@gmail.com", $commande->mail_client);
 
-            $itemsCommande = Item::where('commande_id', '22222222')->get();
+            $itemsCommande = Item::where('commande_id', $id)->get();
             $this->assertCount(2, $itemsCommande);
 
         } catch (ServiceCommandeNotFoundException $e) {
