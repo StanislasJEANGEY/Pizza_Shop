@@ -26,6 +26,14 @@ Développement Web
 **Lien :** [docketu.iutnc.univ-lorraine.fr:18075](docketu.iutnc.univ-lorraine.fr:18075)  
 **Adminer :** [docketu.iutnc.univ-lorraine.fr:18077](docketu.iutnc.univ-lorraine.fr:18077)
 
+## Bases de données : Utilisateur
+
+**Nom :** `pizza_shop`
+**Nom du conteneur :** `pizza-shop.auth.db`
+**Login :** `pizza_shop` **Password :** `pizza_shop`
+**Lien :** [docketu.iutnc.univ-lorraine.fr:18078](docketu.iutnc.univ-lorraine.fr:18078)
+**Adminer :** [docketu.iutnc.univ-lorraine.fr:18077](docketu.iutnc.univ-lorraine.fr:18077)
+
 
 ## Constante du projet
 

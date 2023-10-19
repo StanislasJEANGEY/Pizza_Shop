@@ -7,8 +7,8 @@ use pizzashop\shop\domain\service\CommandeService;
 use Psr\Container\ContainerInterface;
 
 return [
-    'commande.service' => function() {
-        return new CommandeService();
+    'commande.service' => function(ContainerInterface $container) {
+        return new CommandeService($container->get('catalogue.service'));
     },
 
     'catalogue.service' => function() {
@@ -21,17 +21,11 @@ return [
     //'link' => 'https://docketu.iutnc.univ-lorraine.fr:18070/',
 
     AccederCommande::class => function(ContainerInterface $container) {
-        return new AccederCommande($container,
-            $container->get('commande.service'),
-            $container->get('catalogue.service')
-        );
+        return new AccederCommande($container,$container->get('commande.service'));
     },
 
     ValiderCommande::class => function(ContainerInterface $container) {
-        return new ValiderCommande($container,
-            $container->get('commande.service'),
-            $container->get('catalogue.service')
-        );
+        return new ValiderCommande($container,$container->get('commande.service'));
     },
 
 

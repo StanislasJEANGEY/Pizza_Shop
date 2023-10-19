@@ -18,17 +18,23 @@ use Respect\Validation\Validator as v;
 
 class CommandeService implements iCommandeService
 {
+    private iCatalogueService $catalogueService;
+    public function __construct(iCatalogueService $catalogueService)
+    {
+        $this->catalogueService = $catalogueService;
+    }
+
     /**
      * @throws ServiceCatalogueNotFoundException
      * @throws ServiceCommandeNotFoundException
      */
-    public function accederCommande(string $uuid_commande, iCatalogueService $catalogueService): CommandeDTO
+    public function accederCommande(string $uuid_commande): CommandeDTO
     {
         if ($commande = Commande::find($uuid_commande)) {
             $itemEntitiessCommandes = $commande->items;
             $itemEntitiesDTO = [];
             foreach ($itemEntitiessCommandes as $itemEntities) {
-                $produit = $catalogueService->recupererProduit($itemEntities->numero);
+                $produit = $this->catalogueService->recupererProduit($itemEntities->numero, $itemEntities->taille);
                 $itemEntitiesDTO[] = new ItemDTO(
                     $itemEntities->commande_id,
                     $itemEntities->numero,
@@ -68,6 +74,7 @@ class CommandeService implements iCommandeService
      * @throws ServiceCommandeNotFoundException
      * @throws ValidationException
      * @throws ServiceValidatorException
+     * @throws ServiceCommandeInvalideException
      */
 
     public function validerCommande(string $uuid_commande): void
@@ -136,16 +143,23 @@ class CommandeService implements iCommandeService
 
             $montantCommande = 0;
             foreach ($commandeDTO->getItems() as $item) {
-                $sousTotal = $item->getTarifItems() * $item->getQuantiteItems();
+                //récupère les infos du produit
+                $produit = $this->catalogueService->recupererProduit($item->getNumeroProduit(), $item->getTailleItems());
+
+                $sousTotal = $produit->getPrix() * $item->getQuantiteItems();
                 $montantCommande += $sousTotal;
-                
+
                 //ajout de l'item en base
                 $itemEntities = new Item();
                 $itemEntities->numero = $item->getNumeroProduit();
-                $itemEntities->libelle = $item->getLibelleItems();
+                $itemEntities->libelle = $produit->getLibelle();
                 $itemEntities->taille = $item->getTailleItems();
-                $itemEntities->libelle_taille = $item->getLibelleTaille();
-                $itemEntities->tarif = $item->getTarifItems();
+                if ($item->getTailleItems() == Taille::NORMALE)
+                    $itemEntities->libelle_taille = "normale";
+                else if ($item->getTailleItems() == Taille::GRANDE)
+                    $itemEntities->libelle_taille = "grande";
+                else $itemEntities->libelle_taille = "";
+                $itemEntities->tarif = $produit->getPrix();
                 $itemEntities->quantite = $item->getQuantiteItems();
                 $itemEntities->commande_id = $itemdentifiantCommande;
                 $itemEntities->save();
@@ -165,6 +179,7 @@ class CommandeService implements iCommandeService
             throw new ServiceValidatorException("Validation incorrecte", 500);
         }
     }
+
 
     public function loggin(CommandeDTO $commandeDTO): CommandeDTO
     {

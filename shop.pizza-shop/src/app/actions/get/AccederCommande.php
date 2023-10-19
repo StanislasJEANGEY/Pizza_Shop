@@ -16,70 +16,22 @@ class AccederCommande extends AbstractAction
 {
 
     private iCommandeService $commandeService;
-    private iCatalogueService $catalogueService;
 
-    public function __construct(ContainerInterface $container, iCommandeService $s, iCatalogueService $c)
+    public function __construct(ContainerInterface $container, iCommandeService $s)
     {
         parent::__construct($container);
         $this->commandeService = $s;
-        $this->catalogueService = $c;
     }
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
         try {
-            $commande = $this->commandeService->accederCommande($args['id_commande'], $this->catalogueService);
-            $data = [
-                'id' => $commande->getIdCommande(),
-                'délai' => $commande->getDelaiCommande(),
-                'date' => $commande->getDateCommande(),
-                'type livraison' => $commande->getTypeLivraison(),
-                'état' => $commande->getEtatCommande(),
-                'montant' => $commande->getMontantCommande(),
-                'mail client' => $commande->getMailClient(),
-                'items' => $commande->getItemsCommande()
-            ];
-            //ajouter du json dans $data
-            $data += [
-              "links" => [
-                  "self" => [
-                      "href" => $this->container->get("link")."/commandes/".$commande->getIdCommande()
-                  ],
-                  "valider" => [
-                      "href" => "http://localhost:8000/commandes/".$commande->getIdCommande()
-                  ]
-              ]
-            ];
+            $data = self::accederCommandeToJSON($args['id_commande'], $this->commandeService, $this->container);
             $status = 200;
 
-        } catch (ServiceCommandeNotFoundException $e){
-            $data = [
-                'message' => '404 Not Found',
-                'exception' => [
-                    [
-                        'type' => get_class($e),
-                        'code' => $e->getCode(),
-                        'message' => $e->getMessage(),
-                        'file' => $e->getFile(),
-                        'line' => $e->getLine()
-                    ]
-                ]
-            ];
-            $status = 404;
-        } catch (Exception $e) {
-            $data = [
-                'message' => '500 Internal Server Error',
-                'exception' => [
-                    [
-                        'type' => get_class($e),
-                        'code' => $e->getCode(),
-                        'message' => $e->getMessage(),
-                        'file' => $e->getFile(),
-                        'line' => $e->getLine()
-                    ]
-                ]
-            ];
-            $status = 500;
+        } catch (Exception $e){
+            $data = $this->exception($e);
+            $status = $e->getCode();
         }
 
         $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
@@ -89,5 +41,32 @@ class AccederCommande extends AbstractAction
         return $response->withHeader('Content-Type', 'application/json')
             ->withHeader('Access-Control-Allow-Origin', '*')
             ->withStatus($status);
+    }
+
+    public static function accederCommandeToJSON(string $uuid_commande, iCommandeService $service, ContainerInterface $container): array
+    {
+        $commande = $service->accederCommande($uuid_commande);
+        $data = [
+            'id' => $commande->getIdCommande(),
+            'délai' => $commande->getDelaiCommande(),
+            'date' => $commande->getDateCommande(),
+            'type livraison' => $commande->getTypeLivraison(),
+            'état' => $commande->getEtatCommande(),
+            'montant' => $commande->getMontantCommande(),
+            'mail client' => $commande->getMailClient(),
+            'items' => $commande->getItemsCommande()
+        ];
+        //ajouter du json dans $data
+        $data += [
+            "links" => [
+                "self" => [
+                    "href" => $container->get("link")."/commandes/".$commande->getIdCommande()
+                ],
+                "valider" => [
+                    "href" => "http://localhost:8000/commandes/".$commande->getIdCommande()
+                ]
+            ]
+        ];
+        return $data;
     }
 }

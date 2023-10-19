@@ -109,7 +109,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
 
         try {
             // Appelez la méthode accederCommande pour obtenir le DTO
-            $commandeDTO = self::$serviceCommande->accederCommande(self::$commandeIds[0], self::$serviceProduits);
+            $commandeDTO = self::$serviceCommande->accederCommande(self::$commandeIds[0]);
 
             // Vérifiez si le DTO a été créé correctement
             $this->assertInstanceOf(CommandeDTO::class, $commandeDTO);
@@ -136,9 +136,9 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
             "22222222",
             10,
             1,
-            20.0,
-            "test1Create",
-            "grande",
+            (float)null,
+            "",
+            "",
             2
         );
 
@@ -146,9 +146,9 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
             "22222222",
             10,
             2,
-            10.0,
-            "test2Create",
-            "normale",
+            (float)null,
+            "",
+            "",
             1
         );
 
@@ -156,9 +156,9 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
             '22222222',
             '',
             3,
-            0,
-            Commande::ETAT_CREE,
-            0,
+            (int)null,
+            (int)null,
+            (int)null,
             'commande@gmail.com',
             [$itemDTO1, $itemDTO2]);
 
@@ -174,7 +174,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
             $this->assertEquals(3, $commande->type_livraison);
             $this->assertEquals(0, $commande->delai);
             $this->assertEquals(Commande::ETAT_CREE, $commande->etat);
-            $this->assertEquals(40, $commande->montant_total);
+            $this->assertEquals(15.97, $commande->montant_total);
             $this->assertEquals("commande@gmail.com", $commande->mail_client);
 
             $itemsCommande = Item::where('commande_id', '22222222')->get();

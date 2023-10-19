@@ -11,15 +11,14 @@ class CatalogueService implements iCatalogueService
     /**
      * @throws ServiceCatalogueNotFoundException
      */
-    public function recupererProduit(int $numero_produit): ProduitDTO
+    public function recupererProduit(int $numero_produit, int $taille): ProduitDTO
     {
         if (Produit::where('numero', $numero_produit)->exists()) {
             $produit = Produit::where('numero', $numero_produit)
-            ->with(['categorie', 'tarifs' => function ($query) {
-                $query->where('taille_id', 1);
+            ->with(['categorie', 'tarifs' => function ($query) use ($taille) {
+                $query->where('taille_id', $taille);
             }])
             ->first();
-
 
             return new ProduitDTO(
                 $produit->numero,
@@ -28,7 +27,7 @@ class CatalogueService implements iCatalogueService
                 $produit->tailles->map(function ($taille) {
                     return $taille->libelle;
                 }),
-                0);
+                $produit->tarifs->first()->pivot->tarif);
         } else {
             throw new ServiceCatalogueNotFoundException("Produit not found", 404);
         }
