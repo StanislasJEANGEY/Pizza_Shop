@@ -2,9 +2,8 @@
 
 namespace pizzashop\auth\api\domain\provider;
 
-use Exception;
 use Illuminate\Database\Eloquent\Model;
-use pizzashop\auth\api\domain\entities\User;
+use Exception;
 
 class AuthenticationProvider extends Model
 {
@@ -33,7 +32,7 @@ class AuthenticationProvider extends Model
         $user = User::where('username', $username)->first();
 
         if ($user) {
-            $inputPasswordHash = hash("sha256", $password . $user->salt);
+            $inputPasswordHash = hash("sha256", $password);
 
             if ($inputPasswordHash === $user->password) {
                 return true;
@@ -68,10 +67,8 @@ class AuthenticationProvider extends Model
     /**
      * @throws Exception
      */
-    private static function hashPassword($password): array
+    private static function hashPassword($password): string
     {
-        $salt = bin2hex(random_bytes(16));
-        $passwordHash = hash("sha256", $password . $salt);
-        return [$passwordHash, $salt];
+        return hash("sha256", $password);
     }
 }
