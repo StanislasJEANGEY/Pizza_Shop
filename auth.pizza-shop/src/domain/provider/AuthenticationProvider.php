@@ -3,114 +3,74 @@
 namespace pizzashop\auth\api\domain\provider;
 
 use Exception;
-use mysqli;
+use Illuminate\Database\Eloquent\Model;
 
-class AuthenticationProvider
+class User extends Model
 {
-    private $db;
-
-    public function __construct($host, $username, $password, $database)
-    {
-        $this->db = new mysqli($host, $username, $password, $database);
-
-        if ($this->db->connect_error) {
-            die("Erreur de connexion à la base de données: " . $this->db->connect_error);
-        }
-    }
-
-    public function createTables(): void
-    {
-        $query = "Create table if not exists users (
-            email varchar(255) primary key,
-            password varchar(255) not null,
-            active tinyint(4) not null default 0,
-            activation_token varchar(64) default null,
-            activation_token_expiration_date timestamp null default null,
-            refresh_token varchar(255) default null,
-            refresh_token_expiration_date timestamp null default null,
-            reset_passwd_token varchar(64) default null,
-            reset_passwd_token_expiration_date timestamp null default null, 
-            username varchar(64) default null
-        )";
-        $this->db->query($query);
-    }
+    protected $table = 'users';
+    protected $primaryKey = 'email';
+    public $incrementing = false;
+    public $timestamps = false;
 
     /**
      * @throws Exception
      */
-    public function hashPassword($password): array
+    public static function createUser($username, $email, $password): void
     {
-        $salt = bin2hex(random_bytes(16));
-        $passwordHash = hash("sha256", $password . $salt);
-        return [$passwordHash, $salt];
+        list($passwordHash, $salt) = self::hashPassword($password);
+
+        $user = new User;
+        $user->username = $username;
+        $user->email = $email;
+        $user->password = $passwordHash;
+        $user->refresh_token = null;
+        $user->save();
     }
 
-    /**
-     * @throws Exception
-     */
-    public function createUser($username, $email, $password): void
+    public static function authenticateWithCredentials($username, $password): bool
     {
-        list($passwordHash, $salt) = $this->hashPassword($password);
-        $query = "INSERT INTO users (username, email, password, refresh_token) VALUES (?, ?, ?, ?)";
-        $stmt = $this->db->prepare($query);
-        $refreshToken = null;
-        $stmt->bind_param("ssss", $username, $email, $passwordHash, $refreshToken);
-        $stmt->execute();
-    }
+        $user = User::where('username', $username)->first();
 
-    public function authenticateWithCredentials($username, $password): bool
-    {
-        $query = "SELECT password, salt FROM users WHERE username = ?";
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $stmt->bind_result($storedPassword, $salt);
-        $stmt->fetch();
+        if ($user) {
+            $inputPasswordHash = hash("sha256", $password . $user->salt);
 
-        $inputPasswordHash = hash("sha256", $password . $salt);
-
-        if ($inputPasswordHash === $storedPassword) {
-            return true;
+            if ($inputPasswordHash === $user->password) {
+                return true;
+            }
         }
 
         return false;
     }
 
-    public function authenticateWithRefreshToken($refreshToken): ?array
+    public static function authenticateWithRefreshToken($refreshToken): ?array
     {
-        $query = "SELECT username, email FROM users WHERE refresh_token = ?";
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param("s", $refreshToken);
-        $stmt->execute();
-        $stmt->bind_result($username, $email);
-        $stmt->fetch();
+        $user = User::where('refresh_token', $refreshToken)->first();
 
-        if ($username) {
-            return [$username, $email];
+        if ($user) {
+            return [$user->username, $user->email];
         }
 
         return null;
     }
 
-
-    public function getUserProfile($username): ?array
+    public static function getUserProfile($username): ?array
     {
-        $query = "SELECT username, email, refresh_token FROM users WHERE username = ?";
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $stmt->bind_result($username, $email, $refreshToken);
-        $stmt->fetch();
+        $user = User::where('username', $username)->first();
 
-        if ($username) {
-            return ['username' => $username, 'email' => $email, 'refresh_token' => $refreshToken];
+        if ($user) {
+            return ['username' => $user->username, 'email' => $user->email, 'refresh_token' => $user->refresh_token];
         }
 
         return null;
     }
 
-    public function close(): void
+    /**
+     * @throws Exception
+     */
+    private static function hashPassword($password): array
     {
-        $this->db->close();
+        $salt = bin2hex(random_bytes(16));
+        $passwordHash = hash("sha256", $password . $salt);
+        return [$passwordHash, $salt];
     }
 }
