@@ -85,6 +85,24 @@ class CommandeDTO {
         }
     }
 
+    public function __toString() : string
+    {
+        $items = "";
+        foreach ($this->items_commande as $item){
+            $items .= $item . ", ";
+        }
+        return "CommandeDTO{" .
+            "id_commande='" . $this->id_commande . '\'' .
+            ", date_commande='" . $this->date_commande . '\'' .
+            ", type_livraison=" . $this->type_livraison .
+            ", delai_commande=" . $this->delai_commande .
+            ", etat_commande=" . $this->etat_commande .
+            ", montant_commande=" . $this->montant_commande .
+            ", mail_client='" . $this->mail_client . '\'' .
+            ", items_commande=" . $items .
+            "}\n";
+    }
+
     public function setMailClient(string $mail_client): void
     {
         $this->mail_client = $mail_client;

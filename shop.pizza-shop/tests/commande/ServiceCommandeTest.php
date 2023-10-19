@@ -14,7 +14,9 @@ use pizzashop\shop\domain\service\CatalogueService as CatalogueService;
 use pizzashop\shop\domain\service\CommandeService as CommandeService;
 use pizzashop\shop\domain\dto\commande\CommandeDTO as CommandeDTO;
 use pizzashop\shop\Exception\ServiceCatalogueNotFoundException;
+use pizzashop\shop\Exception\ServiceCommandeInvalideException;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException as ServiceCommandeNotFoundException;
+use pizzashop\shop\Exception\ServiceValidatorException;
 use Respect\Validation\Exceptions\ValidationException;
 
 class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
@@ -125,6 +127,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
             $this->fail("ServiceCommandeNotFoundException ne devrait pas être levée ici." . $e->getMessage());
         } catch (ValidationException $e) {
             $this->fail($e->getFullMessage());
+        } catch (ServiceCatalogueNotFoundException $e) {
         }
     }
 
@@ -178,12 +181,20 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
             $this->assertEquals("commande@gmail.com", $commande->mail_client);
 
             $itemsCommande = Item::where('commande_id', '22222222')->get();
-            $this->assertEquals(2, count($itemsCommande));
+            $this->assertCount(2, $itemsCommande);
 
         } catch (ServiceCommandeNotFoundException $e) {
             $this->fail("ServiceCommandeNotFoundException ne devrait pas être levée ici." . $e->getMessage());
         } catch (ServiceCatalogueNotFoundException $e){
             $this->fail("ServiceCatalogueNotFoundException ne devrait pas être levée ici." . $e->getMessage());
+        } catch (ServiceValidatorException $e) {
+            $this->fail("ServiceValidatorException ne devrait pas être levée ici." . $e->getMessage());
+        } catch (ServiceCommandeInvalideException $e) {
+            $this->fail("ServiceCommandeInvalideException ne devrait pas être levée ici." . $e->getMessage());
+        } catch (ValidationException $e) {
+            $this->fail($e->getFullMessage());
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
         }
     }
 
@@ -201,6 +212,10 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
             $this->fail("ServiceCommandeNotFoundException ne devrait pas être levée ici.") . $e->getMessage();
         } catch (ValidationException $e) {
             $this->fail($e->getFullMessage());
+        } catch (ServiceCommandeInvalideException $e) {
+            $this->fail("ServiceCommandeInvalideException ne devrait pas être levée ici.") . $e->getMessage();
+        } catch (ServiceValidatorException $e) {
+            $this->fail("ServiceValidatorException ne devrait pas être levée ici.") . $e->getMessage();
         }
     }
 
