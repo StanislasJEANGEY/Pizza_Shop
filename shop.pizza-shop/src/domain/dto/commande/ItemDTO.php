@@ -5,13 +5,13 @@ namespace pizzashop\shop\domain\dto\commande;
 
 class ItemDTO{
 
-    public string $id_commande;
-    public int $numero_produit;
-    public int $quantite_items;
-    public float $tarif_items;
-    public string $libelle_items;
-    public string $libelle_taille;
-    public string $taille_items;
+    private string $id_commande;
+    private int $numero_produit;
+    private int $quantite_items;
+    private float $tarif_items;
+    private string $libelle_items;
+    private string $libelle_taille;
+    private string $taille_items;
 
     public function __construct(string $id_commande, int $numero_produit, int $quantite_items, float $tarif_items, string $libelle_items, string $libelle_taille, string $taille_items)
     {

@@ -6,6 +6,7 @@ use Exception;
 use pizzashop\shop\app\actions\AbstractAction;
 use pizzashop\shop\app\actions\get\AccederCommande;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
+use pizzashop\shop\domain\dto\commande\ItemDTO;
 use pizzashop\shop\domain\service\iCommandeService;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
 use pizzashop\shop\Exception\ServiceValidatorException;
@@ -30,8 +31,18 @@ class CreerCommande extends AbstractAction
         //TODO : créer les itemsDTO depuis les données en JSON dans le body et les ajouter dans le tableau $array_items
 
         //foreach element du tableau $body['items']
+        $array_items = [];
+        foreach ($body['items'] as $item) {
+            $array_items = new ItemDTO("",
+                $item['numero'],
+                $item['quantite'],
+                (float)null,
+                "",
+                $item['taille'],
+                "");
+        }
 
-        $commandeDTO = new CommandeDTO("","", $body['type_livraison'], (int)null, (int)null, (float)null, $body['mail_client'], $array_items);
+        $commandeDTO = new CommandeDTO("","", $body['type_livraison'], (int)null, (int)null, (float)null, $body['mail_client'], (array)$array_items);
 
         $this->commandeService->creerCommande($commandeDTO);
 
