@@ -4,7 +4,7 @@ namespace pizzashop\auth\test;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Capsule\Manager as DB;
 use PHPUnit\Framework\TestCase;
 use pizzashop\auth\api\domain\entities\User;
 use pizzashop\auth\api\domain\service\UserService;
@@ -21,11 +21,9 @@ class ServiceUserTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
-        $dbcom = __DIR__ . '/../../config/commande.db.ini';
-        $dbcat = __DIR__ . '/../../config/catalog.db.ini';
+        $dbauth = __DIR__ . '/../../config/auth.db.ini';
         $db = new DB();
-        $db->addConnection(parse_ini_file($dbcom), 'commande');
-        $db->addConnection(parse_ini_file($dbcat), 'catalog');
+        $db->addConnection(parse_ini_file($dbauth), 'authentification');
         $db->setAsGlobal();
         $db->bootEloquent();
 

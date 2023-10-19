@@ -136,7 +136,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
 
         //créer 2 itemdto
         $itemDTO1 = new ItemDTO(
-            "22222222",
+            "",
             10,
             1,
             (float)null,
@@ -146,7 +146,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
         );
 
         $itemDTO2 = new ItemDTO(
-            "22222222",
+            "",
             10,
             2,
             (float)null,
@@ -156,7 +156,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
         );
 
         $commandeDTO = new CommandeDTO(
-            '22222222',
+            '',
             '',
             3,
             (int)null,
@@ -170,10 +170,10 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
 
         try {
 
-            self::$serviceCommande->creerCommande($commandeDTO);
+            $id = self::$serviceCommande->creerCommande($commandeDTO);
 
             //tester si la commande est bien créée
-            $commande = Commande::find('22222222');
+            $commande = Commande::find($id);
             $this->assertEquals(3, $commande->type_livraison);
             $this->assertEquals(0, $commande->delai);
             $this->assertEquals(Commande::ETAT_CREE, $commande->etat);
@@ -193,8 +193,6 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
             $this->fail("ServiceCommandeInvalideException ne devrait pas être levée ici." . $e->getMessage());
         } catch (ValidationException $e) {
             $this->fail($e->getFullMessage());
-        } catch (Exception $e) {
-            $this->fail($e->getMessage());
         }
     }
 
