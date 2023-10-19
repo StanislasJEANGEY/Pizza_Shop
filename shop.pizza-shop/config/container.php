@@ -2,6 +2,7 @@
 
 use pizzashop\shop\app\actions\get\AccederCommande;
 use pizzashop\shop\app\actions\patch\ValiderCommande;
+use pizzashop\shop\app\actions\post\CreerCommande;
 use pizzashop\shop\domain\service\CatalogueService;
 use pizzashop\shop\domain\service\CommandeService;
 use Psr\Container\ContainerInterface;
@@ -28,5 +29,8 @@ return [
         return new ValiderCommande($container,$container->get('commande.service'));
     },
 
+    CreerCommande::class => function(ContainerInterface $container) {
+        return new CreerCommande($container,$container->get('commande.service'));
+    },
 
 ];

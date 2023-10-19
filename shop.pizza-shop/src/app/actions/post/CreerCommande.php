@@ -48,7 +48,7 @@ class CreerCommande extends AbstractAction
 
         try {
             $data = AccederCommande::accederCommandeToJSON($args['id_commande'], $this->commandeService, $this->container);
-            $status = 200;
+            $status = 201;
 
         } catch (Exception $e) {
             $data = $this->exception($e);
