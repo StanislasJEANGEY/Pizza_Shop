@@ -4,6 +4,7 @@ namespace pizzashop\auth\api\domain\provider;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use pizzashop\auth\api\domain\entities\User;
 
 class AuthenticationProvider extends Model
 {
@@ -19,7 +20,7 @@ class AuthenticationProvider extends Model
     {
         $passwordHash = self::hashPassword($password);
 
-        $user = new AuthenticationProvider;
+        $user = new User;
         $user->username = $username;
         $user->email = $email;
         $user->password = $passwordHash;
@@ -29,7 +30,7 @@ class AuthenticationProvider extends Model
 
     public static function authenticateWithCredentials($username, $password): bool
     {
-        $user = AuthenticationProvider::where('username', $username)->first();
+        $user = User::where('username', $username)->first();
 
         if ($user) {
             $inputPasswordHash = hash("sha256", $password . $user->salt);
@@ -44,7 +45,7 @@ class AuthenticationProvider extends Model
 
     public static function authenticateWithRefreshToken($refreshToken): ?array
     {
-        $user = AuthenticationProvider::where('refresh_token', $refreshToken)->first();
+        $user = User::where('refresh_token', $refreshToken)->first();
 
         if ($user) {
             return [$user->username, $user->email];
@@ -55,7 +56,7 @@ class AuthenticationProvider extends Model
 
     public static function getUserProfile($username): ?array
     {
-        $user = AuthenticationProvider::where('username', $username)->first();
+        $user = User::where('username', $username)->first();
 
         if ($user) {
             return ['username' => $user->username, 'email' => $user->email, 'refresh_token' => $user->refresh_token];
