@@ -46,6 +46,14 @@ class AccederCommande extends AbstractAction
     public static function accederCommandeToJSON(string $uuid_commande, iCommandeService $service, ContainerInterface $container): array
     {
         $commande = $service->accederCommande($uuid_commande);
+        $array_item = [];
+        foreach ($commande->getItemsCommande() as $item) {
+            $array_item[] = [
+                'numero' => $item->getNumeroProduit(),
+                'quantite' => $item->getQuantiteItems(),
+                'taille' => $item->getTailleItems()
+            ];
+        }
         $data = [
             'id' => $commande->getIdCommande(),
             'délai' => $commande->getDelaiCommande(),
@@ -54,7 +62,7 @@ class AccederCommande extends AbstractAction
             'état' => $commande->getEtatCommande(),
             'montant' => $commande->getMontantCommande(),
             'mail client' => $commande->getMailClient(),
-            'items' => $commande->getItemsCommande()
+            'items' => $array_item
         ];
         //ajouter du json dans $data
         $data += [

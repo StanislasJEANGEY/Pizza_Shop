@@ -54,7 +54,7 @@ class ItemDTO{
         return $this->libelle_taille;
     }
 
-    public function getTailleItems(): int
+    public function getTailleItems(): string
     {
         return $this->taille_items;
     }

@@ -27,10 +27,10 @@ class CreerCommande extends AbstractAction
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        $body = $request->getParsedBody();
-        //TODO : créer les itemsDTO depuis les données en JSON dans le body et les ajouter dans le tableau $array_items
+        $body = $request->getBody();
+        //TODO : gérer les exceptions
 
-        //foreach element du tableau $body['items']
+        $body = json_decode($body, true);
         $array_items = [];
         foreach ($body['items'] as $item) {
             $array_items = new ItemDTO("",
@@ -44,16 +44,18 @@ class CreerCommande extends AbstractAction
 
         $commandeDTO = new CommandeDTO("","", $body['type_livraison'], (int)null, (int)null, (float)null, $body['mail_client'], (array)$array_items);
 
-        $this->commandeService->creerCommande($commandeDTO);
 
         try {
-            $data = AccederCommande::accederCommandeToJSON($args['id_commande'], $this->commandeService, $this->container);
+            $id = $this->commandeService->creerCommande($commandeDTO);
+            $data = AccederCommande::accederCommandeToJSON($id, $this->commandeService, $this->container);
             $status = 201;
 
         } catch (Exception $e) {
             $data = $this->exception($e);
             $status = $e->getCode();
         }
+        $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $data = str_replace('\/', '/', $data);
         $response->getBody()->write($data);
 
         return $response->withHeader('Content-Type', 'application/json')

@@ -8,5 +8,5 @@ interface iCommandeService {
     public function accederCommande(string $uuid_commande): CommandeDTO;
     public function validerCommande(string $uuid_commande);
 
-    public function creerCommande(CommandeDTO $commandeDTO);
+    public function creerCommande(CommandeDTO $commandeDTO) : string;
 }

@@ -124,7 +124,7 @@ class CommandeService implements iCommandeService
      * @throws ServiceCommandeNotFoundException
      * @throws ServiceValidatorException
      */
-    public function creerCommande(CommandeDTO $commandeDTO): void
+    public function creerCommande(CommandeDTO $commandeDTO): string
     {
         try {
             $validator = v::attribute('mail_client', v::notEmpty()->email())
@@ -176,8 +176,9 @@ class CommandeService implements iCommandeService
 
 
         } catch (ValidationException $e) {
-            throw new ServiceValidatorException("Validation incorrecte", 500);
+            throw new ServiceValidatorException($e->getFullMessage(), 500);
         }
+        return $itemdentifiantCommande;
     }
 
 
