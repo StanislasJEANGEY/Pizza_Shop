@@ -87,10 +87,8 @@ class CommandeDTO {
 
     public function __toString() : string
     {
-        $items = "";
-        foreach ($this->items_commande as $item){
-            $items .= $item . ", ";
-        }
+        $items = implode('', $this->items_commande);
+
         return "CommandeDTO{" .
             "id_commande='" . $this->id_commande . '\'' .
             ", date_commande='" . $this->date_commande . '\'' .

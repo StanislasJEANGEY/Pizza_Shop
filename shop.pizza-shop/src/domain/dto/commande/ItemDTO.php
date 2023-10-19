@@ -59,18 +59,17 @@ class ItemDTO{
         return $this->taille_items;
     }
 
-    public function __toString() : string
+    public function __toString(): string
     {
-        return "ItemDTO{ \n" .
-            "id_commande : " . $this->id_commande . "\n" .
-            "numero_produit : " . $this->numero_produit . "\n" .
-            "quantite_items : " . $this->quantite_items . "\n" .
-            "tarif_items : " . $this->tarif_items . "\n" .
-            "libelle_items : " . $this->libelle_items . "\n" .
-            "libelle_taille : " . $this->libelle_taille . "\n" .
-            "taille_items : " . $this->taille_items . "\n" .
-            "}";
-
+        return "ItemDTO{" .
+            "id_commande='" . $this->id_commande . '\'' .
+            ", numero_produit=" . $this->numero_produit .
+            ", quantite_items=" . $this->quantite_items .
+            ", tarif_items=" . $this->tarif_items .
+            ", libelle_items='" . $this->libelle_items . '\'' .
+            ", libelle_taille='" . $this->libelle_taille . '\'' .
+            ", taille_items=" . $this->taille_items .
+            '}';
     }
 
 }
