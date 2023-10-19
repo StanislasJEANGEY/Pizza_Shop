@@ -36,8 +36,8 @@ class CreerCommande extends AbstractAction
                 $item['quantite'],
                 (float)null,
                 "",
-                $item['taille'],
-                (int)null);
+                '',
+                $item['taille']);
         }
 
         $commandeDTO = new CommandeDTO("","", $body['type_livraison'], (int)null, (int)null, (float)null, $body['mail_client'], (array)$array_items);
