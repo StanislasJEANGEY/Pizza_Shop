@@ -16,8 +16,8 @@
   },
   "autoload": {
     "psr-4" : {
-      "pizzashop\\auth\\test" : "./tests/",
-      "pizzashop\\auth\\api" : "./src/"
+      "pizzashop\\auth\\test\\" : "./tests/",
+      "pizzashop\\auth\\api\\" : "./src/"
     }
   }
 }
