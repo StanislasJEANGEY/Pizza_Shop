@@ -3,6 +3,7 @@
 namespace pizzashop\auth\api\domain\provider;
 
 use Exception;
+use mysqli;
 
 class AuthenticationProvider
 {
