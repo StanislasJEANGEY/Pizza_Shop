@@ -92,6 +92,7 @@ class AuthenticationProvider
         return null;
     }
 
+
     public function getUserProfile($username): ?array
     {
         $query = "SELECT username, email, refresh_token FROM users WHERE username = ?";
