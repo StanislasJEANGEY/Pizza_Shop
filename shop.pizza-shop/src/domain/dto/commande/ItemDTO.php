@@ -11,9 +11,9 @@ class ItemDTO{
     private float $tarif_items;
     private string $libelle_items;
     private string $libelle_taille;
-    private string $taille_items;
+    private int $taille_items;
 
-    public function __construct(string $id_commande, int $numero_produit, int $quantite_items, float $tarif_items, string $libelle_items, string $libelle_taille, string $taille_items)
+    public function __construct(string $id_commande, int $numero_produit, int $quantite_items, float $tarif_items, string $libelle_items, string $libelle_taille, int $taille_items)
     {
         $this->id_commande = $id_commande;
         $this->numero_produit = $numero_produit;
@@ -54,7 +54,7 @@ class ItemDTO{
         return $this->libelle_taille;
     }
 
-    public function getTailleItems(): string
+    public function getTailleItems(): int
     {
         return $this->taille_items;
     }

@@ -41,8 +41,8 @@ class CommandeService implements iCommandeService
                     $itemEntities->quantite,
                     $produit->getPrix(),
                     $produit->getLibelle(),
-                    $itemEntities->taille,
-                    $produit->getLibelleTaille($itemEntities->taille));
+                    $itemEntities->libelle_taille,
+                    $itemEntities->taille);
             }
         } else {
             throw new ServiceCommandeNotFoundException("Commande " . $uuid_commande . " not found", 404);

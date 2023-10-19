@@ -49,8 +49,11 @@ class AccederCommande extends AbstractAction
         foreach ($commande->getItemsCommande() as $item) {
             $array_item[] = [
                 'numero' => $item->getNumeroProduit(),
+                'taille' => $item->getTailleItems(),
                 'quantite' => $item->getQuantiteItems(),
-                'taille' => $item->getTailleItems()
+                'libelle' => $item->getLibelleItems(),
+                'libelle_taille' => $item->getLibelleTaille(),
+                'tarif' => $item->getTarifItems()
             ];
         }
         $data = [

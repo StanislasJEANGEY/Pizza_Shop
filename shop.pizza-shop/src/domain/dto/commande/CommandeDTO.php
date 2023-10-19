@@ -7,7 +7,7 @@ use function FastRoute\cachedDispatcher;
 
 class CommandeDTO {
 
-    public string $id_commande;
+    private string $id_commande;
     private string $date_commande;
     private int $type_livraison;
     private int $delai_commande;
