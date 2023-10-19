@@ -4,7 +4,6 @@ namespace pizzashop\shop\app\actions\get;
 
 use Exception;
 use pizzashop\shop\app\actions\AbstractAction;
-use pizzashop\shop\domain\service\CommandeService;
 use pizzashop\shop\domain\service\iCatalogueService;
 use pizzashop\shop\domain\service\iCommandeService;
 use pizzashop\shop\Exception\ServiceCommandeNotFoundException;

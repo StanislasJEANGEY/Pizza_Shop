@@ -8,8 +8,6 @@ use pizzashop\shop\app\actions\get\AccederCommande;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\dto\commande\ItemDTO;
 use pizzashop\shop\domain\service\iCommandeService;
-use pizzashop\shop\Exception\ServiceCommandeNotFoundException;
-use pizzashop\shop\Exception\ServiceValidatorException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
