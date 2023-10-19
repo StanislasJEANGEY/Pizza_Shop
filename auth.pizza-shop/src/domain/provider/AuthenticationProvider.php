@@ -4,6 +4,7 @@ namespace pizzashop\auth\api\domain\provider;
 
 use Illuminate\Database\Eloquent\Model;
 use Exception;
+use pizzashop\auth\api\domain\entities\User;
 
 class AuthenticationProvider extends Model
 {
