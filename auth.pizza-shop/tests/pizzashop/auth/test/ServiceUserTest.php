@@ -47,7 +47,7 @@ class ServiceUserTest extends TestCase
         // Création d'un utilisateur
         $user = new User();
         $user->username = 'John';
-        $user->email = 'john.doe@mail.com' . uniqid() . '@mail.com';
+        $user->email = 'john.doe' . uniqid() . '@mail.com';
         $user->password = 'John';
         $user->refresh_token = 'refresh_token';
         self::$user_email[] = $user->email;
@@ -66,8 +66,10 @@ class ServiceUserTest extends TestCase
 
     public function testAuthenticateWithCredentials() {
         $userDTO = AuthenticationProvider::authenticateWithCredentials('John', 'John');
+        //var_dump($userDTO);
         $this->assertTrue($userDTO);
         $userDTO = AuthenticationProvider::authenticateWithCredentials('John', 'Jane');
+        //var_dump($userDTO);
         $this->assertFalse($userDTO);
     }
 
