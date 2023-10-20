@@ -59,9 +59,9 @@ class ItemDTO{
         return $this->taille_items;
     }
 
-    public function __toString(): string
+    public function toTab(): array
     {
-        $data = [
+        return [
             'id_commande' => $this->id_commande,
             'numero_produit' => $this->numero_produit,
             'quantite_items' => $this->quantite_items,
@@ -70,8 +70,6 @@ class ItemDTO{
             'libelle_taille' => $this->libelle_taille,
             'taille_items' => $this->taille_items
         ];
-
-        return json_encode($data, JSON_PRETTY_PRINT);
     }
 
 }

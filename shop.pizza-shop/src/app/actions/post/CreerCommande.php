@@ -31,7 +31,7 @@ class CreerCommande extends AbstractAction
         $body = json_decode($body, true);
         $array_items = [];
         foreach ($body['items'] as $item) {
-            $array_items = new ItemDTO("",
+            $array_items[] = new ItemDTO("",
                 $item['numero'],
                 $item['quantite'],
                 (float)null,
@@ -40,8 +40,7 @@ class CreerCommande extends AbstractAction
                 $item['taille']);
         }
 
-        $commandeDTO = new CommandeDTO("","", $body['type_livraison'], (int)null, (int)null, (float)null, $body['mail_client'], (array)$array_items);
-
+        $commandeDTO = new CommandeDTO("","", $body['type_livraison'], (int)null, (int)null, (float)null, $body['mail_client'], $array_items);
 
         try {
             $id = $this->commandeService->creerCommande($commandeDTO);
