@@ -83,7 +83,7 @@ class ServiceUserTest extends TestCase
         $userDTO = AuthenticationProvider::getUserProfile('John');
         $this->assertNotNull($userDTO);
         $this->assertEquals(['username' => 'John', 'email' => 'john.doe@mail.com', 'refresh_token' => 'refresh_token'], $userDTO);
-        $this->assertNull(AuthenticationProvider::getUserProfile('Jane'));
+        $this->assertNull(AuthenticationProvider::getUserProfile('Spiderman'));
     }
 
     /**
