@@ -45,6 +45,7 @@ class AuthenticationProvider extends Model
         return false;
     }
 
+
     public static function authenticateWithRefreshToken($refreshToken): ?array
     {
         $user = User::where('refresh_token', $refreshToken)->first();

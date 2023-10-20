@@ -66,8 +66,10 @@ class ServiceUserTest extends TestCase
 
     public function testAuthenticateWithCredentials() {
         $userDTO = AuthenticationProvider::authenticateWithCredentials('John', 'John');
+        //var_dump($userDTO);
         $this->assertTrue($userDTO);
         $userDTO = AuthenticationProvider::authenticateWithCredentials('John', 'Jane');
+        //var_dump($userDTO);
         $this->assertFalse($userDTO);
     }
 
