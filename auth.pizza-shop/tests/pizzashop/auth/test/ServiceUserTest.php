@@ -72,24 +72,24 @@ class ServiceUserTest extends TestCase
     }
 
     public function testAuthenticateWithRefreshToken() {
-        $userDTO = self::$serviceUser->authenticateWithRefreshToken('refresh_token');
+        $userDTO = AuthenticationProvider::authenticateWithRefreshToken('refresh_token');
         $this->assertNotNull($userDTO);
         $this->assertEquals(['John', 'john.doe@mail.com'], $userDTO);
         $this->assertNull(AuthenticationProvider::authenticateWithRefreshToken('refresh_token2'));
     }
 
     public function testGetUserProfile() {
-        $userDTO = self::$serviceUser->getUserProfile('John');
+        $userDTO = AuthenticationProvider::getUserProfile('John');
         $this->assertNotNull($userDTO);
         $this->assertEquals(['username' => 'John', 'email' => 'john.doe@mail.com', 'refresh_token' => 'refresh_token'], $userDTO);
-        $this->assertNull(self::$serviceUser->getUserProfile('Jane'));
+        $this->assertNull(AuthenticationProvider::getUserProfile('Jane'));
     }
 
     /**
      * @throws Exception
      */
     public function testHashPassword() {
-        $userDTO = self::$serviceUser->hashPassword('John');
+        $userDTO = AuthenticationProvider::hashPassword('John');
         $this->assertEquals('John', $userDTO);
         $this->assertNotEquals('Jane', $userDTO);
     }
