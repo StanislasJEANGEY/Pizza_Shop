@@ -85,9 +85,13 @@ class CommandeDTO {
         }
     }
 
-    public function toStr() : string
+    public function toTab() : array
     {
-        $data = [
+        $tab = [];
+        foreach ($this->items_commande as $item)
+            $tab = $item->toTab();
+
+        return [
             'id_commande' => $this->id_commande,
             'date_commande' => $this->date_commande,
             'type_livraison' => $this->type_livraison,
@@ -95,10 +99,8 @@ class CommandeDTO {
             'etat_commande' => $this->etat_commande,
             'montant_commande' => $this->montant_commande,
             'mail_client' => $this->mail_client,
-            'items_commande' => $this->items_commande
+            'items_commande' => $tab
         ];
-
-        return json_encode($data, JSON_PRETTY_PRINT);
     }
 
     public function setMailClient(string $mail_client): void
