@@ -16,7 +16,7 @@ class AuthenticationProvider extends Model
     /**
      * @throws Exception
      */
-    public static function createUser($username, $email, $password): void
+    public static function createUser($username, $email, $password): User
     {
         $passwordHash = self::hashPassword($password);
 
@@ -26,6 +26,8 @@ class AuthenticationProvider extends Model
         $user->password = $passwordHash;
         $user->refresh_token = null;
         $user->save();
+
+        return $user;
     }
 
     public static function authenticateWithCredentials($username, $password): bool

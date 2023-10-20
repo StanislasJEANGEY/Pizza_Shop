@@ -51,7 +51,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
     }
 
 
-    private static function cleanDB()
+    private static function cleanDB(): void
     {
 
         foreach (self::$commandeIds as $id) {
@@ -66,7 +66,7 @@ class ServiceCommandeTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    private static function fill()
+    private static function fill(): void
     {
         // Crée une commande fictive pour tester l'accès
         $commande = new Commande();

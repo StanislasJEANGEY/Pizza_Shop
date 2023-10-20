@@ -2,7 +2,7 @@
 
 namespace pizzashop\auth\test;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../../../vendor/autoload.php';
 
 use Exception;
 use Illuminate\Database\Capsule\Manager as DB;
@@ -13,13 +13,13 @@ use pizzashop\auth\api\domain\service\UserService;
 
 class ServiceUserTest extends TestCase
 {
-    private static $user_email;
+    private static $user_email = [];
     private static $serviceUser;
 
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
-        $dbauth = __DIR__ . '/../../../config/auth.db.ini';
+        $dbauth = __DIR__ . '/../../../../config/auth.db.ini';
         $db = new DB();
         $db->addConnection(parse_ini_file($dbauth), 'authentification');
         $db->setAsGlobal();
@@ -35,56 +35,63 @@ class ServiceUserTest extends TestCase
     }
 
 
-    private static function cleanDB()
+    private static function cleanDB(): void
     {
-        foreach (self::$user_email as $id) {
-            User::find($id)->delete();
+        foreach (self::$user_email as $email) {
+            User::where('email', $email)->delete();
         }
     }
 
-    private static function fill()
+    private static function fill(): void
     {
+        // Création d'un utilisateur
         $user = new User();
         $user->username = 'John';
-        $user->email = 'john.doe@mail.com';
+        $user->email = 'john.doe@mail.com' . uniqid() . '@mail.com';
         $user->password = 'John';
         $user->refresh_token = 'refresh_token';
+        self::$user_email[] = $user->email;
+
+        $user->save();
     }
 
     /**
      * @throws Exception
      */
     public function testCreateUser() {
-        AuthenticationProvider::createUser('John', 'john.doe@mail.com', 'John');
-        $user = User::where('username', 'John')->first();
-        $this->assertNotNull($user);
-        $this->assertEquals('John', $user->username);
+        $userDTO = AuthenticationProvider::createUser('John', self::$user_email, 'John');
+        $this->assertNotNull($userDTO);
+        $this->assertEquals('John', $userDTO->username);
     }
 
     public function testAuthenticateWithCredentials() {
-        $this->assertTrue(AuthenticationProvider::authenticateWithCredentials('John', 'John'));
-        $this->assertFalse(AuthenticationProvider::authenticateWithCredentials('John', 'Jane'));
-        $this->assertFalse(AuthenticationProvider::authenticateWithCredentials('Jane', 'John'));
+        $userDTO = AuthenticationProvider::authenticateWithCredentials('John', 'John');
+        $this->assertTrue($userDTO);
+        $userDTO = AuthenticationProvider::authenticateWithCredentials('John', 'Jane');
+        $this->assertFalse($userDTO);
     }
 
     public function testAuthenticateWithRefreshToken() {
-        $this->assertNotNull(AuthenticationProvider::authenticateWithRefreshToken('refresh_token'));
-        $this->assertEquals(['John', 'john.doe@mail.com'], AuthenticationProvider::authenticateWithRefreshToken('refresh_token'));
+        $userDTO = self::$serviceUser->authenticateWithRefreshToken('refresh_token');
+        $this->assertNotNull($userDTO);
+        $this->assertEquals(['John', 'john.doe@mail.com'], $userDTO);
         $this->assertNull(AuthenticationProvider::authenticateWithRefreshToken('refresh_token2'));
     }
 
     public function testGetUserProfile() {
-        $this->assertNotNull(AuthenticationProvider::getUserProfile('John'));
-        $this->assertEquals(['username' => 'John', 'email' => 'john.doe@mail.com', 'refresh_token' => 'refresh_token'], AuthenticationProvider::getUserProfile('John'));
-        $this->assertNull(AuthenticationProvider::getUserProfile('Jane'));
+        $userDTO = self::$serviceUser->getUserProfile('John');
+        $this->assertNotNull($userDTO);
+        $this->assertEquals(['username' => 'John', 'email' => 'john.doe@mail.com', 'refresh_token' => 'refresh_token'], $userDTO);
+        $this->assertNull(self::$serviceUser->getUserProfile('Jane'));
     }
 
     /**
      * @throws Exception
      */
     public function testHashPassword() {
-        $this->assertEquals('John', AuthenticationProvider::hashPassword('John'));
-        $this->assertNotEquals('Jane', AuthenticationProvider::hashPassword('John'));
+        $userDTO = self::$serviceUser->hashPassword('John');
+        $this->assertEquals('John', $userDTO);
+        $this->assertNotEquals('Jane', $userDTO);
     }
 
 }
