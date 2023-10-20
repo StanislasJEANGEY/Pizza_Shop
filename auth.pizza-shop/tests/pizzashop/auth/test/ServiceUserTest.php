@@ -59,9 +59,9 @@ class ServiceUserTest extends TestCase
      * @throws Exception
      */
     public function testCreateUser() {
-        $userDTO = AuthenticationProvider::createUser('John', 'john.doe@mail.com', 'John');
+        $userDTO = AuthenticationProvider::createUser('Jane', 'jane.doe@mail.com', 'Jane');
         $this->assertNotNull($userDTO);
-        $this->assertEquals('John', $userDTO->username);
+        $this->assertEquals('Jane', $userDTO->username);
     }
 
     public function testAuthenticateWithCredentials() {
