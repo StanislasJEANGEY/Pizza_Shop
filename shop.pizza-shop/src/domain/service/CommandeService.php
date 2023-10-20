@@ -127,7 +127,6 @@ class CommandeService implements iCommandeService
     public function creerCommande(CommandeDTO $commandeDTO): string
     {
         try {
-            echo $commandeDTO->toStr();
             $validator = v::attribute('mail_client', v::notEmpty()->email())
                 ->attribute('type_livraison', v::notEmpty()->in([1, 2, 3]))
                 ->attribute('items_commande', v::notEmpty()->arrayVal()
