@@ -9,7 +9,6 @@ use Illuminate\Database\Capsule\Manager as DB;
 use PHPUnit\Framework\TestCase;
 use pizzashop\auth\api\domain\entities\User;
 use pizzashop\auth\api\domain\provider\AuthenticationProvider;
-use pizzashop\auth\api\domain\service\UserService;
 
 class ServiceUserTest extends TestCase
 {
@@ -46,7 +45,7 @@ class ServiceUserTest extends TestCase
         $user = new User();
         $user->username = 'John';
         $user->email = 'john.doe@mail.com';
-        $user->password = 'John';
+        $user->password = hash("sha256", 'John');
         $user->refresh_token = 'refresh_token';
         self::$user_email[] = $user->email;
 
@@ -65,10 +64,8 @@ class ServiceUserTest extends TestCase
 
     public function testAuthenticateWithCredentials() {
         $userDTO = AuthenticationProvider::authenticateWithCredentials('John', 'John');
-        //var_dump($userDTO);
         $this->assertTrue($userDTO);
         $userDTO = AuthenticationProvider::authenticateWithCredentials('John', 'Jane');
-        //var_dump($userDTO);
         $this->assertFalse($userDTO);
     }
 
@@ -86,13 +83,5 @@ class ServiceUserTest extends TestCase
         $this->assertNull(AuthenticationProvider::getUserProfile('Spiderman'));
     }
 
-    /**
-     * @throws Exception
-     */
-//    public function testHashPassword() {
-//        $userDTO = AuthenticationProvider::hashPassword('John');
-//        $this->assertEquals('John', $userDTO);
-//        $this->assertNotEquals('Jane', $userDTO);
-//    }
 
 }
