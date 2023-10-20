@@ -11,6 +11,8 @@ class User extends Model
     protected $connection = 'authentification';
     protected $table = 'users';
     protected $primaryKey = 'email';
+    protected $keyType = 'string';
+
     public $timestamps = false;
     protected $fillable = ['password',
         'actve',
