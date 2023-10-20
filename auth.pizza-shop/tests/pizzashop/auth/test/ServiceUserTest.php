@@ -14,7 +14,6 @@ use pizzashop\auth\api\domain\service\UserService;
 class ServiceUserTest extends TestCase
 {
     private static $user_email = [];
-    private static $serviceUser;
 
     public static function setUpBeforeClass(): void
     {
@@ -25,7 +24,6 @@ class ServiceUserTest extends TestCase
         $db->setAsGlobal();
         $db->bootEloquent();
 
-        self::$serviceUser = new UserService();
         self::fill();
     }
 
@@ -62,6 +60,7 @@ class ServiceUserTest extends TestCase
         $userDTO = AuthenticationProvider::createUser('Jane', 'jane.doe@mail.com', 'Jane');
         $this->assertNotNull($userDTO);
         $this->assertEquals('Jane', $userDTO->username);
+        self::$user_email[] = 'jane.doe@mail.com';
     }
 
     public function testAuthenticateWithCredentials() {
