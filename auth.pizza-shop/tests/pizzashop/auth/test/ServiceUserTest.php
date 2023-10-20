@@ -38,7 +38,7 @@ class ServiceUserTest extends TestCase
     private static function cleanDB(): void
     {
         foreach (self::$user_email as $email) {
-            User::where('email', $email)->delete();
+            User::find($email)->delete();
         }
     }
 
