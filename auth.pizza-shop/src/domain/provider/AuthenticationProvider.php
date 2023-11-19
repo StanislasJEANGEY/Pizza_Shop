@@ -76,8 +76,4 @@ class AuthenticationProvider extends Model
         return hash("sha256", $password);
     }
 
-    public function findUserByEmail(string $email)
-    {
-        return User::where('email', $email)->first();
-    }
 }

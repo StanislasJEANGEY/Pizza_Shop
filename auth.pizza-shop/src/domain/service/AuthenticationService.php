@@ -17,26 +17,65 @@ class AuthenticationService
         $this->authenticationProvider = $authenticationProvider;
     }
 
-    // signin : reçoit des credentials et retourne un couple (access_token, refresh_token)
+    /**
+     * @throws Exception
+     */
+    public function signin(string $username, string $password): array
+    {
+        $user = $this->authenticationProvider->authenticateWithCredentials($username, $password);
+        if ($user) {
+            $tokenData = [
+                "username" => $user->username,
+                "email" => $user->email
+            ];
+            $accessToken = $this->jwtManager->createToken("pizzashop", $tokenData);
+            $refreshToken = $this->jwtManager->createToken("pizzashop", ["refresh_token" => $user -> refresh_token]);
+            return [$accessToken, $refreshToken];
+        }
+        throw new Exception("Authentication failed", 401);
+    }
 
     /**
      * @throws Exception
      */
-    public function signin(string $email, string $password): array
+    public function validate(string $accessToken): array
     {
-        $user = $this->authenticationProvider->findUserByEmail($email);
-        if ($user && password_verify($password, $user->getPassword())) {
-            // /!\ Les 2 méthodes n'existe pas jsp s'il faut les créer ou si ma méthode signin n'est pas bonne
-            $access_token = $this->jwtManager->generateAccessToken($user);
-            $refresh_token = $this->jwtManager->generateRefreshToken($user);
-            return [
-                'access_token' => $access_token,
-                'refresh_token' => $refresh_token
-            ];
-        } else {
-            throw new Exception("Invalid credentials", 401);
+        $tokenData = $this->jwtManager->validateToken($accessToken);
+        if (isset($tokenData->upr)) {
+            return $tokenData->upr;
         }
+        throw new Exception("Invalid token", 401);
     }
 
+    /**
+     * @throws Exception
+     */
+    public function refresh(string $refreshToken): array
+    {
+        $tokenData = $this->jwtManager->validateToken($refreshToken);
+        if (isset($tokenData->refresh_token)) {
+            $user = $this->authenticationProvider->authenticateWithRefreshToken($tokenData->refresh_token);
+            if ($user) {
+                $tokenData = [
+                    "username" => $user->username,
+                    "email" => $user->email
+                ];
+                $accessToken = $this->jwtManager->createToken("pizzashop", $tokenData);
+                $refreshToken = $this->jwtManager->createToken("pizzashop", ["refresh_token" => $user -> refresh_token]);
+                return [$accessToken, $refreshToken];
+            }
+        }
+        throw new Exception("Invalid token", 401);
+    }
+
+    public function signup(string $username, string $email, string $password) //: array
+    {
+        // TODO
+    }
+
+    public function activate(string $token) //: bool
+    {
+        // TODO
+    }
 
 }
