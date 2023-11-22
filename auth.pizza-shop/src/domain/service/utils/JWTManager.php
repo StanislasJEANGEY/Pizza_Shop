@@ -46,7 +46,7 @@ class JWTManager
             throw new ExpiredException($e->getMessage());
         } catch (Exception $e) {
             // Token invalide
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 }

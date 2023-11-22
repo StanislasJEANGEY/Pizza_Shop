@@ -95,6 +95,11 @@ class ServiceUserTest extends TestCase
         $this->assertNull(AuthenticationProvider::getUserProfile('Spiderman'));
     }
 
+//    public function testTest()
+//    {
+//        AuthenticationProvider::createUser('Johnny', 'johnny@mail.com', 'Johnny');
+//    }
+
 
     /**
      * @throws Exception

@@ -30,19 +30,19 @@ class AuthenticationProvider extends Model
         return $user;
     }
 
-    public static function authenticateWithCredentials($username, $password): bool
+    public static function authenticateWithCredentials($email, $password): ?User
     {
-        $user = User::where('username', $username)->first();
+        $user = User::where('email', $email)->first();
 
         if ($user) {
             $inputPasswordHash = hash("sha256", $password);
 
             if ($inputPasswordHash === $user->password) {
-                return true;
+                return $user;
             }
         }
 
-        return false;
+        return null;
     }
 
 

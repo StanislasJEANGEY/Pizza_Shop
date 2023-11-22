@@ -10,4 +10,10 @@ return function( \Slim\App $app):void {
     // Accueil
     $app->get('[/]', \pizzashop\auth\api\app\action\get\Accueil::class)
         ->setName('get-accueil');
+    $app->post('/signin', \pizzashop\auth\api\app\action\post\SigninAction::class)
+        ->setName('post-signin');
+    $app->get('/validate', \pizzashop\auth\api\app\action\get\ValidateAction::class)
+        ->setName('get-validate');
+    $app->post('/refresh', \pizzashop\auth\api\app\action\post\RefreshAction::class)
+        ->setName('post-refresh');
 };

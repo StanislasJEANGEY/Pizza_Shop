@@ -20,13 +20,13 @@ class AuthenticationService
     /**
      * @throws Exception
      */
-    public function signin(string $username, string $password): array
+    public function signin(string $email, string $password): array
     {
-        $user = $this->authenticationProvider->authenticateWithCredentials($username, $password);
+        $user = $this->authenticationProvider->authenticateWithCredentials($email, $password);
         if ($user) {
             $tokenData = [
-                "username" => $user->username,
-                "email" => $user->email
+                "email" => $user->email,
+                "password" => $user->password
             ];
             $accessToken = $this->jwtManager->createToken("pizzashop", $tokenData);
             $refreshToken = $this->jwtManager->createToken("pizzashop", ["refresh_token" => $user -> refresh_token]);
