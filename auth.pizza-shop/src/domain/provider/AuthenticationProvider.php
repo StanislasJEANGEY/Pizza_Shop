@@ -30,7 +30,7 @@ class AuthenticationProvider extends Model
         return $user;
     }
 
-    public static function authenticateWithCredentials($email, $password): ?User
+    public static function authenticateWithCredentials($email, $password): bool
     {
         $user = User::where('email', $email)->first();
 
@@ -38,11 +38,11 @@ class AuthenticationProvider extends Model
             $inputPasswordHash = hash("sha256", $password);
 
             if ($inputPasswordHash === $user->password) {
-                return $user;
+                return true;
             }
         }
 
-        return null;
+        return false;
     }
 
 
