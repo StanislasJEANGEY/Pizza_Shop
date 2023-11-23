@@ -74,9 +74,9 @@ class ServiceUserTest extends TestCase
     public function testAuthenticateWithCredentials()
     {
         $userDTO = AuthenticationProvider::authenticateWithCredentials('John', 'John');
-        $this->assertTrue($userDTO);
+        $this->assertNotNull($userDTO);
         $userDTO = AuthenticationProvider::authenticateWithCredentials('John', 'Jane');
-        $this->assertFalse($userDTO);
+        $this->assertNull($userDTO);
     }
 
     public function testAuthenticateWithRefreshToken()
@@ -91,7 +91,7 @@ class ServiceUserTest extends TestCase
     {
         $userDTO = AuthenticationProvider::getUserProfile('John');
         $this->assertNotNull($userDTO);
-        $this->assertEquals(['username' => 'John', 'email' => 'john.doe@mail.com', 'refresh_token' => 'refresh_token'], $userDTO);
+        $this->assertEquals(['email' => 'john.doe@mail.com', 'password' => 'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da', 'refresh_token' => 'refresh_token'], $userDTO);
         $this->assertNull(AuthenticationProvider::getUserProfile('Spiderman'));
     }
 

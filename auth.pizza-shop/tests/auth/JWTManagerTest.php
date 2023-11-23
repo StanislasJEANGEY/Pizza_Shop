@@ -2,6 +2,7 @@
 
 namespace pizzashop\auth\test\auth;
 
+use Exception;
 use Firebase\JWT\ExpiredException;
 use PHPUnit\Framework\TestCase;
 use pizzashop\auth\api\domain\service\utils\JWTManager;
@@ -16,6 +17,9 @@ class JWTManagerTest extends TestCase
         $this->jwtManager = new JWTManager('your-secret-key', 2);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testCreateAndValidateToken()
     {
         // Données de test
@@ -48,8 +52,9 @@ class JWTManagerTest extends TestCase
         $this->assertEquals($userProfile['mail'], $decodedToken->upr->mail);
     }
 
-
-
+    /**
+     * @throws Exception
+     */
     public function testExpiredToken()
     {
         // Données de test

@@ -57,12 +57,12 @@ class AuthenticationProvider extends Model
         return null;
     }
 
-    public static function getUserProfile($username): ?array
+    public static function getUserProfile($email): ?array
     {
-        $user = User::where('username', $username)->first();
+        $user = User::where('email', $email)->first();
 
         if ($user) {
-            return ['username' => $user->username, 'email' => $user->email, 'refresh_token' => $user->refresh_token];
+            return ['email' => $user->email, 'password' => $user->password, 'refresh_token' => $user->refresh_token];
         }
 
         return null;

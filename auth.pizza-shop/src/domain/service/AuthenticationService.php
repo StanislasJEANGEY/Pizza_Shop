@@ -26,15 +26,14 @@ class AuthenticationService
             $user = $this->authenticationProvider->getUserProfile($email);
             if ($user) {
                 $tokenData = [
-                    "email" => $user->email,
-                    "password" => $user->password
+                    "email" => $user["email"],
+                    "password" => $user["password"],
                 ];
                 $accessToken = $this->jwtManager->createToken("pizzashop", $tokenData);
-                $refreshToken = $this->jwtManager->createToken("pizzashop", ["refresh_token" => $user -> refresh_token]);
+                $refreshToken = $this->jwtManager->createToken("pizzashop", ["refresh_token" => $user["refresh_token"]]);
                 return [$accessToken, $refreshToken];
             }
         }
-
         throw new Exception("Authentication failed", 401);
     }
 
