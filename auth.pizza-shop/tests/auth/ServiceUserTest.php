@@ -55,6 +55,7 @@ class ServiceUserTest extends TestCase
         $user->email = 'john.doe@mail.com';
         $user->password = hash("sha256", 'John');
         $user->refresh_token = 'refresh_token';
+        $user->access_token = 'access_token';
         self::$user_email[] = $user->email;
 
         $user->save();
@@ -106,9 +107,9 @@ class ServiceUserTest extends TestCase
     public function testSignin()
     {
 
-        $userDTO = self::$authService->signin('john.doe@mail.com', 'Johnny');
+        $userDTO = AuthenticationService::signin('john.doe@mail.com', 'John');
         $this->assertNotNull($userDTO);
-        $this->assertEquals('Johnny', $userDTO->username);
+        $this->assertEquals(['access_token', 'refresh_token'], $userDTO);
     }
 
     /**
