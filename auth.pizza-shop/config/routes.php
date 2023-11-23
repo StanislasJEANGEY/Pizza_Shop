@@ -14,6 +14,6 @@ return function( \Slim\App $app):void {
         ->setName('post-signin');
     $app->get('/validate', \pizzashop\auth\api\app\action\get\ValidateAction::class)
         ->setName('get-validate');
-    $app->post('/refresh', \pizzashop\auth\api\app\action\post\RefreshAction::class)
+    $app->post('/refresh', \pizzashop\auth\api\app\action\post\RefreshAxvalidatection::class)
         ->setName('post-refresh');
 };
