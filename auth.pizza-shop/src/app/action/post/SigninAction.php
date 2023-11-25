@@ -21,7 +21,7 @@ class SigninAction extends AbstractAction
         $authHeader = $request->getHeaderLine('Authorization');
         list($email, $password) = explode(':', base64_decode(substr($authHeader, 6)));
 
-        $jwtManager = new JWTManager("secret", 3600);
+        $jwtManager = $this->container->get('jwtmanager');
         $authProvider = new AuthenticationProvider();
 
         $authService = new AuthenticationService($jwtManager, $authProvider);

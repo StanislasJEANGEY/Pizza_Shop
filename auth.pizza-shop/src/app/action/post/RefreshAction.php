@@ -21,7 +21,7 @@ class RefreshAction extends AbstractAction
         $authHeader = $request->getHeaderLine('Authorization');
         $refreshToken = substr($authHeader, 7);
 
-        $jwtManager = new JWTManager("secret", 3600);
+        $jwtManager = $this->container->get('jwtmanager');
         $authProvider = new AuthenticationProvider();
         $authService = new AuthenticationService($jwtManager, $authProvider);
 

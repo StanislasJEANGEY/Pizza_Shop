@@ -19,16 +19,16 @@ class JWTManager
         $this->tokenLifetime = $tokenLifetime;
     }
 
-    public function createToken($issuer, $userProfile): string
+    public function createToken($idsuer, $userProfil): string
     {
         $issuedAt = time();
         $expiration = $issuedAt + $this->tokenLifetime;
 
         $payload = array(
-            "iss" => $issuer,
+            "iss" => $idsuer,
             "iat" => $issuedAt,
             "exp" => $expiration,
-            "upr" => $userProfile
+            "upr" => $userProfil
         );
 
         return JWT::encode($payload, $this->secret, 'HS256');

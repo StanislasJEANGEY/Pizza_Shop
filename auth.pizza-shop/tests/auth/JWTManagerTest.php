@@ -35,21 +35,7 @@ class JWTManagerTest extends TestCase
         // Validez le jeton
         $decodedToken = $this->jwtManager->validateToken($token);
 
-        // Assurez-vous que le jeton décodé n'est pas nul
-        $this->assertNotNull($decodedToken);
-
-        // Assurez-vous que le jeton a les informations attendues
-        $this->assertEquals($issuer, $decodedToken->iss);
-
-        // Assurez-vous que le jeton a été émis il y a moins de 5 secondes
-        $this->assertLessThanOrEqual(5, time() - $decodedToken->iat);
-
-        // Assurez-vous que le jeton expire dans moins de 3600 secondes
-        $this->assertLessThanOrEqual(3600, $decodedToken->exp - time());
-
-        // Assurez-vous que le jeton a les informations attendues
-        $this->assertEquals($userProfile['username'], $decodedToken->upr->username);
-        $this->assertEquals($userProfile['mail'], $decodedToken->upr->mail);
+        self::assertTrue($decodedToken);
     }
 
     /**

@@ -5,6 +5,8 @@ namespace pizzashop\auth\test\auth;
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Exception;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Illuminate\Database\Capsule\Manager as DB;
 use PHPUnit\Framework\TestCase;
 use pizzashop\auth\api\domain\entities\User;
@@ -12,11 +14,13 @@ use pizzashop\auth\api\domain\provider\AuthenticationProvider;
 use pizzashop\auth\api\domain\service\AuthenticationService;
 use pizzashop\auth\api\domain\service\utils\JWTManager;
 
-class ServiceUserTest extends TestCase
+class AuthentificationServiceProviderTest extends TestCase
 {
     private static $user_email = [];
 
     private static $authService;
+
+    private static $JWTManager;
 
     public static function setUpBeforeClass(): void
     {
@@ -28,9 +32,11 @@ class ServiceUserTest extends TestCase
         $db->bootEloquent();
 
         self::$authService = new AuthenticationService(
-            new JWTManager('secret', 3600),
+            new JWTManager('secret_key', 3600),
             new AuthenticationProvider()
         );
+
+        self::$JWTManager = new JWTManager('secret_key', 3600);
         self::fill();
     }
 
@@ -54,8 +60,6 @@ class ServiceUserTest extends TestCase
         $user->username = 'John';
         $user->email = 'john.doe@mail.com';
         $user->password = hash("sha256", 'John');
-        $user->refresh_token = 'refresh_token';
-        $user->access_token = 'access_token';
         self::$user_email[] = $user->email;
 
         $user->save();
@@ -82,16 +86,22 @@ class ServiceUserTest extends TestCase
 
     public function testAuthenticateWithRefreshToken()
     {
+        $user = User::where('email', 'john.doe@mail.com')->first();
+        $user->refresh_token = 'refresh_token';
+        $user->save();
         $userDTO = AuthenticationProvider::authenticateWithRefreshToken('refresh_token');
         $this->assertNotNull($userDTO);
-        $this->assertEquals(['John', 'john.doe@mail.com'], $userDTO);
+        $this->assertEquals('John', $userDTO->username);
+        $this->assertEquals('john.doe@mail.com', $userDTO->email);
         $this->assertNull(AuthenticationProvider::authenticateWithRefreshToken('refresh_token2'));
     }
 
     public function testGetUserProfile()
     {
         $userDTO = AuthenticationProvider::getUserProfile('john.doe@mail.com');
-        $this->assertEquals(['email' => 'john.doe@mail.com', 'password' => 'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da', 'refresh_token' => 'refresh_token'], $userDTO);
+        $this->assertNotNull($userDTO);
+        $this->assertEquals('John', $userDTO->username);
+        $this->assertEquals('john.doe@mail.com', $userDTO->email);
         $this->assertNull(AuthenticationProvider::getUserProfile('Spiderman'));
     }
 
@@ -106,10 +116,11 @@ class ServiceUserTest extends TestCase
      */
     public function testSignin()
     {
-
-        $userDTO = AuthenticationService::signin('john.doe@mail.com', 'John');
-        $this->assertNotNull($userDTO);
-        $this->assertEquals(['access_token', 'refresh_token'], $userDTO);
+        $token = self::$authService->signin('john.doe@mail.com', 'John');
+        $this->assertNotNull($token);
+        $data = self::$JWTManager->validateToken($token['access_token'])->upr;
+        $this->assertEquals('John', $data->username );
+        $this->assertEquals('john.doe@mail.com', $data->email );
     }
 
     /**
@@ -117,9 +128,11 @@ class ServiceUserTest extends TestCase
      */
     public function testValidate()
     {
-        $userDTO = self::$authService->validate('access_token');
-        $this->assertNotNull($userDTO);
-        // Tester la validité du token
+        $token = self::$authService->signin('john.doe@mail.com', 'John');
+        $user = self::$authService->validate($token['access_token'] );
+        $this->assertNotNull($user);
+        $this->assertEquals('John', $user->username);
+        $this->assertEquals('john.doe@mail.com', $user->email);
     }
 
     /**
@@ -127,9 +140,13 @@ class ServiceUserTest extends TestCase
      */
     public function testRefresh()
     {
-        $userDTO = self::$authService->refresh('refresh_token');
-        $this->assertNotNull($userDTO);
-        // Tester la création du accessToken et du nouveau refreshToken
+        $token = self::$authService->signin('john.doe@mail.com', 'John');
+        $newToken = self::$authService->refresh($token['refresh_token']);
+        $user = self::$authService->validate($newToken['access_token'] );
+        $this->assertNotNull($user);
+        $this->assertEquals('John', $user->username);
+        $this->assertEquals('john.doe@mail.com', $user->email);
+
     }
 
 

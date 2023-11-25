@@ -4,6 +4,7 @@ namespace pizzashop\auth\api\domain\provider;
 
 use Illuminate\Database\Eloquent\Model;
 use Exception;
+use pizzashop\auth\api\domain\dto\UserDTO;
 use pizzashop\auth\api\domain\entities\User;
 
 class AuthenticationProvider extends Model
@@ -46,23 +47,35 @@ class AuthenticationProvider extends Model
     }
 
 
-    public static function authenticateWithRefreshToken($refreshToken): ?array
+    public static function authenticateWithRefreshToken($refreshToken): ?UserDTO
     {
         $user = User::where('refresh_token', $refreshToken)->first();
 
         if ($user) {
-            return [$user->username, $user->email];
+            return new UserDTO(
+                $user->email,
+                $user->password,
+                $user->refresh_token,
+                $user->refresh_token_expiration_date,
+                $user->username
+            );
         }
 
         return null;
     }
 
-    public static function getUserProfile($email): ?array
+    public static function getUserProfile($email): ?UserDTO
     {
         $user = User::where('email', $email)->first();
 
         if ($user) {
-            return ['email' => $user->email, 'password' => $user->password, 'refresh_token' => $user->refresh_token];
+            return new UserDTO(
+                $user->email,
+                $user->password,
+                $user->refresh_token,
+                $user->refresh_token_expiration_date,
+                $user->username
+            );
         }
 
         return null;
