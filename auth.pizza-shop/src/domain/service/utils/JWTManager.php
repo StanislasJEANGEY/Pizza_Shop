@@ -6,6 +6,8 @@ use Exception;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use pizzashop\auth\api\Exception\ExpiredTokenException;
+use pizzashop\auth\api\Exception\InvalidTokenException;
 use stdClass;
 
 class JWTManager
@@ -43,10 +45,10 @@ class JWTManager
             return JWT::decode($token, new Key($this->secret, 'HS256'));
         } catch (ExpiredException $e) {
             // Token expiré
-            throw new ExpiredException($e->getMessage());
+            throw new ExpiredTokenException($e->getMessage());
         } catch (Exception $e) {
             // Token invalide
-            throw new Exception($e->getMessage());
+            throw new InvalidTokenException($e->getMessage());
         }
     }
 }

@@ -7,6 +7,8 @@ use pizzashop\auth\api\app\action\AbstractAction;
 use pizzashop\auth\api\domain\provider\AuthenticationProvider;
 use pizzashop\auth\api\domain\service\AuthenticationService;
 use pizzashop\auth\api\domain\service\utils\JWTManager;
+use pizzashop\auth\api\Exception\ExpiredTokenException;
+use pizzashop\auth\api\Exception\InvalidTokenException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -25,13 +27,19 @@ class ValidateAction extends AbstractAction
         $authProvider = new AuthenticationProvider();
         $authService = new AuthenticationService($jwtManager, $authProvider);
 
-        $userProfile = $authService->validate($token);
-
-        if ($userProfile) {
-            $response->getBody()->write(json_encode($userProfile));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        try {
+            $data = $authService->validate($token);
+            $status = 200;
+        } catch (InvalidTokenException|ExpiredTokenException|Exception $e) {
+            $data = $this->exception($e);
+            $status = $e->getCode();
         }
 
-        return $response->withStatus(401);
+        $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $data = str_replace('\/', '/', $data);
+        $response->getBody()->write($data);
+        return $response->withHeader('Content-Type', 'application/json')
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withStatus($status);
     }
 }

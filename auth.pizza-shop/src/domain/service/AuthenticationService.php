@@ -8,6 +8,8 @@ use pizzashop\auth\api\domain\dto\UserDTO;
 use pizzashop\auth\api\domain\entities\User;
 use pizzashop\auth\api\domain\provider\AuthenticationProvider;
 use pizzashop\auth\api\domain\service\utils\JWTManager;
+use pizzashop\auth\api\Exception\ExpiredTokenException;
+use pizzashop\auth\api\Exception\InvalidTokenException;
 use Ramsey\Uuid\Uuid;
 use function PHPUnit\Framework\isNull;
 
@@ -60,7 +62,7 @@ class AuthenticationService
     {
         $tokenData = $this->jwtManager->validateToken($accessToken);
         if (isset($tokenData->upr)) return $tokenData->upr;
-        throw new Exception("Invalid token", 401);
+        throw new InvalidTokenException("Invalid token", 401);
     }
 
     /**
@@ -73,9 +75,9 @@ class AuthenticationService
                 if (date("Y-m-d H:i:s") < $user->refresh_token_expiration_date)
                     return $this->generateToken($user->email);
                 else {
-                    throw new Exception("Refresh token expired", 401);
+                    throw new ExpiredTokenException("Refresh token expired", 401);
                 }
-            } else throw new Exception("Invalid refresh token", 401);
+            } else throw new InvalidTokenException("Invalid refresh token", 401);
 
     }
 

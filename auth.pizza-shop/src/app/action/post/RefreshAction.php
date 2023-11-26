@@ -25,13 +25,19 @@ class RefreshAction extends AbstractAction
         $authProvider = new AuthenticationProvider();
         $authService = new AuthenticationService($jwtManager, $authProvider);
 
-        $newToken = $authService->refresh($refreshToken);
-
-        if ($newToken) {
-            $response->getBody()->write(json_encode($newToken));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        try {
+            $data = $authService->refresh($refreshToken);
+            $status = 200;
+        } catch (Exception $e) {
+            $data = $this->exception($e);
+            $status = $e->getCode();
         }
 
-        return $response->withStatus(401);
+        $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $data = str_replace('\/', '/', $data);
+        $response->getBody()->write($data);
+        return $response->withHeader('Content-Type', 'application/json')
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withStatus($status);
     }
 }
