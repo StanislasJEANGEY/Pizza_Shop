@@ -11,14 +11,7 @@ use Psr\Container\ContainerInterface;
 return [
 
     'jwtmanager' => function(ContainerInterface $container) {
-        $var = getenv('SECRET_KEY');
-        if ($var === false) {
-            throw new Exception('Secret key not found');
-        } else if (is_array($var)) {
-            throw new Exception('Secret key is not a string');
-        } else $secret = $var;
-
-        return new JWTManager($secret, 3600);
+                return new JWTManager('secretKey', 3600);
     },
 
 ];

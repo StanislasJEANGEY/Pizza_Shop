@@ -26,12 +26,20 @@ class SigninAction extends AbstractAction
 
         $authService = new AuthenticationService($jwtManager, $authProvider);
 
-        $result = $authService->signin($email, $password);
-        if ($result) {
-            $response->getBody()->write(json_encode($result));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        try {
+            $data = $authService->signin($email, $password);
+            $status = 200;
+        } catch (Exception $e) {
+            $data = $this->exception($e);
+            $status = $e->getCode();
         }
 
-        return $response->withStatus(401);
+
+        $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $data = str_replace('\/', '/', $data);
+        $response->getBody()->write($data);
+        return $response->withHeader('Content-Type', 'application/json')
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withStatus($status);
     }
 }
