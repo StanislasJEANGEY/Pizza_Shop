@@ -71,7 +71,6 @@ class CreerCommande extends AbstractAction
         $response->getBody()->write($data);
 
         return $response->withHeader('Content-Type', 'application/json')
-            ->withHeader('Access-Control-Allow-Origin', '*')
             ->withStatus($status);
     }
 }
