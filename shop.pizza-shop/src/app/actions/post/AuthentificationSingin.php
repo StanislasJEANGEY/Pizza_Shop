@@ -11,16 +11,19 @@ class AuthentificationSingin extends AbstractAction
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        //récupération les credentials en basic auth
-        $credentials = $request->getHeader('Authorization');
-        //renvoie vers l'api authentification avec les credentials avec guzzle
-        $response = $this->container->get('guzzle')->request('POST', $this->container->get('link_auth') . 'signin', [
-            'headers' => [
-                'Authorization' => $credentials
-            ]
-        ]);
-        //renvoie la réponse de l'api authentification
-        return $response;
-
+        try {
+            return $this->container->get('guzzle')->request('POST', $this->container->get('link_auth') . 'signin', [
+                'headers' => [
+                    'Authorization' => $request->getHeaderLine('Authorization')
+                ]
+            ]);
+        } catch (\Exception $e) {
+            $data = $this->exception($e);
+            $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            $data = str_replace('\/', '/', $data);
+            $response->getBody()->write($data);
+            return $response->withHeader('Content-Type', 'application/json')
+                ->withStatus($e->getCode());
+        }
     }
 }

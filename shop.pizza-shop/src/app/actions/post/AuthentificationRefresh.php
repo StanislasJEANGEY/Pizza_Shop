@@ -11,6 +11,19 @@ class AuthentificationRefresh extends AbstractAction
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        // TODO: Implement __invoke() method.
+        try {
+            return $this->container->get('guzzle')->request('POST', $this->container->get('link_auth') . 'refresh', [
+                'headers' => [
+                    'Authorization' => $request->getHeaderLine('Authorization')
+                ]
+            ]);
+        } catch (\Exception $e) {
+            $data = $this->exception($e);
+            $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            $data = str_replace('\/', '/', $data);
+            $response->getBody()->write($data);
+            return $response->withHeader('Content-Type', 'application/json')
+            ->withStatus($e->getCode());
+        }
     }
 }

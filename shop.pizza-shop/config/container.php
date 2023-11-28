@@ -23,7 +23,7 @@ return [
     //'link' => 'https://docketu.iutnc.univ-lorraine.fr:18070/',
 
     /* lien local api auth*/
-    'link_auth' => 'http://localhost:18072/',
+    'link_auth' => 'http://api.pizza-auth/',
     /* lien prod api auth*/
     //'link_auth' => 'https://docketu.iutnc.univ-lorraine.fr:18072/',
 
