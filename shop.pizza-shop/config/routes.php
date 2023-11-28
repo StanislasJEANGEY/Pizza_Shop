@@ -30,4 +30,13 @@ return function( \Slim\App $app):void {
 
     $app->post('/commandes[/]', pizzashop\shop\app\actions\post\CreerCommande::class)
         ->setName('post-creer_commande');
+
+    $app->post('/auth/singin[/]', pizzashop\shop\app\actions\post\AuthentificationSingin::class)
+        ->setName('post-authentification-signin');
+
+    $app->get('/auth/validate[/]', pizzashop\shop\app\actions\get\AuthentificationValidate::class)
+        ->setName('get-authentification-validate');
+
+    $app->post('/auth/refresh[/]', pizzashop\shop\app\actions\post\AuthentificationRefresh::class)
+        ->setName('post-authentification-refresh');
 };

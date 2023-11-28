@@ -2,6 +2,7 @@
 
 use pizzashop\shop\app\actions\get\AccederCommande;
 use pizzashop\shop\app\actions\patch\ValiderCommande;
+use pizzashop\shop\app\actions\post\AuthentificationSingin;
 use pizzashop\shop\app\actions\post\CreerCommande;
 use pizzashop\shop\domain\service\CatalogueService;
 use pizzashop\shop\domain\service\CommandeService;
@@ -16,10 +17,19 @@ return [
         return new CatalogueService();
     },
 
-    /* lien local */
+    /* lien local api shop*/
     'link' => 'http://localhost:18070/',
-    /* lien prod */
+    /* lien prod api shop*/
     //'link' => 'https://docketu.iutnc.univ-lorraine.fr:18070/',
+
+    /* lien local api auth*/
+    'link_auth' => 'http://localhost:18072/',
+    /* lien prod api auth*/
+    //'link_auth' => 'https://docketu.iutnc.univ-lorraine.fr:18072/',
+
+    'guzzle' => function(ContainerInterface $container) {
+        return new GuzzleHttp\Client();
+    },
 
     AccederCommande::class => function(ContainerInterface $container) {
         return new AccederCommande($container,$container->get('commande.service'));
@@ -31,6 +41,10 @@ return [
 
     CreerCommande::class => function(ContainerInterface $container) {
         return new CreerCommande($container,$container->get('commande.service'));
+    },
+
+    AuthentificationSingin::class => function(ContainerInterface $container) {
+        return new AuthentificationSingin($container,);
     },
 
 ];
