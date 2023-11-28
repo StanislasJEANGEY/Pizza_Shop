@@ -14,7 +14,7 @@ class AuthentificationSingin extends AbstractAction
         //récupération les credentials en basic auth
         $credentials = $request->getHeader('Authorization');
         //renvoie vers l'api authentification avec les credentials avec guzzle
-        $response = $this->container->get('guzzle')->request('POST', $this->container->get('link_auth') . '/signin', [
+        $response = $this->container->get('guzzle')->request('POST', $this->container->get('link_auth') . 'signin', [
             'headers' => [
                 'Authorization' => $credentials
             ]
