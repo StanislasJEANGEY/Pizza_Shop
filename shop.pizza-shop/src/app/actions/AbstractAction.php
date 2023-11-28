@@ -29,5 +29,12 @@ abstract class AbstractAction {
             ]
         ];
     }
+
+    public function formatJSON($data) : string
+    {
+        $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $data = str_replace(['\/', '\\\\', '\n', '\"'], ['/', '\\', '', '"'], $data);
+        return $data;
+    }
 	abstract public function __invoke(Request $request, Response $response, array $args):Response;
 }

@@ -27,50 +27,63 @@ class CreerCommande extends AbstractAction
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        $body = $request->getBody();
-        try{
-            $body = json_decode($body, true);
-            $array_items = [];
-            foreach ($body['items'] as $item) {
-                $array_items[] = new ItemDTO("",
-                    $item['numero'],
-                    $item['quantite'],
-                    (float)null,
-                    "",
-                    '',
-                    $item['taille']);
+        try {
+            $this->container->get('guzzle')->request('GET', $this->container->get('link_auth') . 'validate', [
+                'headers' => [
+                    'Authorization' => $request->getHeaderLine('Authorization')
+                ]
+            ]);
+
+            $body = $request->getBody();
+            try{
+                $body = json_decode($body, true);
+                $array_items = [];
+                foreach ($body['items'] as $item) {
+                    $array_items[] = new ItemDTO("",
+                        $item['numero'],
+                        $item['quantite'],
+                        (float)null,
+                        "",
+                        '',
+                        $item['taille']);
+                }
+
+                $commandeDTO = new CommandeDTO("", "", $body['type_livraison'], (int)null, (int)null, (float)null, $body['mail_client'], $array_items);
+
+                $id = $this->commandeService->creerCommande($commandeDTO);
+                $data = AccederCommande::accederCommandeToJSON($id, $this->commandeService, $this->container);
+                $status = 201;
+                $response->withHeader('Location', $this->container->get('settings') . '/commande/' . $id);
+
+            } catch (ValidationException $e) {
+                $data = [
+                    'message' => $e->getCode().' Internal Server Error',
+                    'exception' => [
+                        [
+                            'type' => get_class($e),
+                            'code' => $e->getCode(),
+                            'message' => $e->getFullMessage(),
+                            'file' => $e->getFile(),
+                            'line' => $e->getLine()
+                        ]
+                    ]
+                ];
+                $status = 400;
+            } catch (Exception $e) {
+                $data = $this->exception($e);
+                $status = $e->getCode();
             }
 
-            $commandeDTO = new CommandeDTO("", "", $body['type_livraison'], (int)null, (int)null, (float)null, $body['mail_client'], $array_items);
 
-            $id = $this->commandeService->creerCommande($commandeDTO);
-            $data = AccederCommande::accederCommandeToJSON($id, $this->commandeService, $this->container);
-            $status = 201;
-            $response->withHeader('Location', $this->container->get('settings') . '/commande/' . $id);
-
-        } catch (ValidationException $e) {
-            $data = [
-                'message' => $e->getCode().' Internal Server Error',
-                'exception' => [
-                    [
-                        'type' => get_class($e),
-                        'code' => $e->getCode(),
-                        'message' => $e->getFullMessage(),
-                        'file' => $e->getFile(),
-                        'line' => $e->getLine()
-                    ]
-                ]
-            ];
-            $status = 400;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $data = $this->exception($e);
+
             $status = $e->getCode();
         }
-        $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        $data = str_replace('\/', '/', $data);
+        $data = $this->formatJSON($data);
         $response->getBody()->write($data);
-
         return $response->withHeader('Content-Type', 'application/json')
             ->withStatus($status);
+
     }
 }
