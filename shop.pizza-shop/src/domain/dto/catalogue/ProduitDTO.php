@@ -36,9 +36,11 @@ class ProduitDTO{
         return $this->libelle_produit;
     }
 
-    public function getLibelleTaille(): string
+    public function getLibelleTaille(): array
     {
-        return $this->libelle_taille;
+        $array = explode(',', $this->libelle_taille);
+        $array = str_replace(['"', '[', ']'], '', $array);
+        return $array;
     }
 
     public function getNumeroProduit(): int
