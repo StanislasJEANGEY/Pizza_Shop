@@ -35,8 +35,7 @@ class SigninAction extends AbstractAction
         }
 
 
-        $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        $data = str_replace('\/', '/', $data);
+        $data = $this->formatJSON($data);
         $response->getBody()->write($data);
         return $response->withHeader('Content-Type', 'application/json')
             ->withHeader('Access-Control-Allow-Origin', '*')

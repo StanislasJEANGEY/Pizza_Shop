@@ -1,6 +1,6 @@
 <?php
 
-namespace pizzashop\auth\api\app\action;
+namespace pizzashop\gateway\action;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -17,7 +17,7 @@ abstract class AbstractAction {
     public function exception(\Exception $e) : array
     {
         return [
-            'message' => $e->getCode().' : '.$e->getMessage(),
+            'message' => $e->getCode() .$e->getMessage(),
             'exception' => [
                 [
                     'type' => get_class($e),
@@ -33,7 +33,7 @@ abstract class AbstractAction {
     public function formatJSON($data) : string
     {
         $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        $data = str_replace(['\/', '\\\\', '\\n', '\"'], ['/', '\\', '', '"'], $data);
+        $data = str_replace(['\/', '\\\\', '\n', '\"'], ['/', '\\', '', '"'], $data);
         return $data;
     }
 	abstract public function __invoke(Request $request, Response $response, array $args):Response;

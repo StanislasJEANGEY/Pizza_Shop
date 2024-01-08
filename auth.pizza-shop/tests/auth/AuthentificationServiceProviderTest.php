@@ -82,6 +82,8 @@ class AuthentificationServiceProviderTest extends TestCase
         $this->assertTrue($userDTO);
         $userDTO = AuthenticationProvider::authenticateWithCredentials('john.doe@mail.com', 'Jane');
         $this->assertFalse($userDTO);
+
+        AuthenticationProvider::authenticateWithCredentials('AlphonseFleury@sfr.fr', 'test');
     }
 
     public function testAuthenticateWithRefreshToken()

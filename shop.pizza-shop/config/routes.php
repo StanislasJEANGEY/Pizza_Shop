@@ -28,21 +28,29 @@ return function( \Slim\App $app):void {
     $app->patch('/commandes/{id_commande}', pizzashop\shop\app\actions\patch\ValiderCommande::class)
         ->setName('patch-valider_commande');
 
+    //creerCommande()
     $app->post('/commandes[/]', pizzashop\shop\app\actions\post\CreerCommande::class)
         ->setName('post-creer_commande');
 
+    // authentification signin
     $app->post('/auth/singin[/]', pizzashop\shop\app\actions\post\AuthentificationSingin::class)
         ->setName('post-authentification-signin');
 
+    // authentification validate
     $app->get('/auth/validate[/]', pizzashop\shop\app\actions\get\AuthentificationValidate::class)
         ->setName('get-authentification-validate');
 
+    // authentification refresh
     $app->post('/auth/refresh[/]', pizzashop\shop\app\actions\post\AuthentificationRefresh::class)
         ->setName('post-authentification-refresh');
 
-    $app->get('/listerProduits[/]', pizzashop\shop\app\actions\get\ListerProduits::class)
+    // catalog listerProduits
+    $app->get('/produits[/]', pizzashop\shop\app\actions\get\ListerProduits::class)
         ->setName('get-lister_produits');
 
+    // catalog accederProduit
     $app->get('/produits/{id}', \pizzashop\shop\app\actions\get\AccederProduit::class)
         ->setName('get-acceder_produit');
+
+    //todo jules add route
 };

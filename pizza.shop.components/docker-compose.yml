@@ -100,3 +100,18 @@ services:
 
  
 
+## api gateway
+
+  api.gateway:
+    image: 'canals/php:latest'
+    ports:
+      - '18074:80'
+    networks:
+      - pizza-shop.net
+    volumes:
+      - ../gateway.pizza-shop/public:/var/www/html
+      - ../gateway.pizza-shop:/var/www
+    working_dir: /var/www
+    depends_on:
+      - api.pizza-shop
+      - api.pizza-auth

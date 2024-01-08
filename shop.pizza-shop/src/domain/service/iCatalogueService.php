@@ -10,4 +10,6 @@ interface iCatalogueService {
     public function listerProduits(): array;
 
     public function getProduitById(int $id): ProduitDTO;
+
+    //todo jules add méthode
 }

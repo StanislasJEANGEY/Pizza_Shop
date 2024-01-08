@@ -20,7 +20,7 @@ return [
     },
 
     /* lien local api shop*/
-    'link' => 'http://localhost:18070/',
+    'link' => 'http://localhost:18074/',
 
 
     /* lien local api auth*/
@@ -54,5 +54,7 @@ return [
     AccederProduit::class => function(ContainerInterface $container) {
         return new AccederProduit($container->get('catalogue.service'));
     },
+
+    //todo jules add class
 
 ];
