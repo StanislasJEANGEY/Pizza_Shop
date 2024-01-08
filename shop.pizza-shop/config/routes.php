@@ -39,4 +39,8 @@ return function( \Slim\App $app):void {
 
     $app->post('/auth/refresh[/]', pizzashop\shop\app\actions\post\AuthentificationRefresh::class)
         ->setName('post-authentification-refresh');
+
+    $app->get('/listerProduits[/]', pizzashop\shop\app\actions\get\ListerProduits::class)
+        ->setName('get-lister_produits');
+
 };

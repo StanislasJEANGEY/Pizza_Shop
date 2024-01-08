@@ -1,6 +1,7 @@
 <?php
 
 use pizzashop\shop\app\actions\get\AccederCommande;
+use pizzashop\shop\app\actions\get\ListerProduits;
 use pizzashop\shop\app\actions\patch\ValiderCommande;
 use pizzashop\shop\app\actions\post\AuthentificationSingin;
 use pizzashop\shop\app\actions\post\CreerCommande;
@@ -19,13 +20,11 @@ return [
 
     /* lien local api shop*/
     'link' => 'http://localhost:18070/',
-    /* lien prod api shop*/
-    //'link' => 'https://docketu.iutnc.univ-lorraine.fr:18070/',
+
 
     /* lien local api auth*/
     'link_auth' => 'http://api.pizza-auth/',
-    /* lien prod api auth*/
-    //'link_auth' => 'https://docketu.iutnc.univ-lorraine.fr:18072/',
+
 
     'guzzle' => function(ContainerInterface $container) {
         return new GuzzleHttp\Client();
@@ -45,6 +44,10 @@ return [
 
     AuthentificationSingin::class => function(ContainerInterface $container) {
         return new AuthentificationSingin($container,);
+    },
+
+    ListerProduits::class => function(ContainerInterface $container) {
+        return new ListerProduits($container,$container->get('catalogue.service'));
     },
 
 ];

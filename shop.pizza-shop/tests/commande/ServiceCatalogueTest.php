@@ -33,4 +33,12 @@ class ServiceCatalogueTest extends TestCase
 
     }
 
+    public function testListerProduits(): void
+    {
+        $produits = self::$serviceProduits->listerProduits();
+        $this->assertIsArray($produits);
+        $this->assertNotEmpty($produits);
+        $this->assertContainsOnlyInstancesOf('pizzashop\shop\domain\dto\catalogue\ProduitDTO', $produits);
+
+    }
 }

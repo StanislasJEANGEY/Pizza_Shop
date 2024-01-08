@@ -33,5 +33,22 @@ class CatalogueService implements iCatalogueService
         }
     }
 
+    public function listerProduits(): array
+    {
+        $produits = Produit::with(['categorie', 'tailles', 'tarifs'])->get();
+        $produitsDTO = [];
+        foreach ($produits as $produit) {
+            $produitsDTO[] = new ProduitDTO(
+                $produit->numero,
+                $produit->libelle,
+                $produit->categorie->libelle,
+                $produit->tailles->map(function ($taille) {
+                    return $taille->libelle;
+                }),
+                $produit->tarifs->first()->pivot->tarif);
+        }
+        return $produitsDTO;
+    }
+
 }
 
