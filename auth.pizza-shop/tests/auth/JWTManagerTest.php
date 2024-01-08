@@ -6,6 +6,7 @@ use Exception;
 use Firebase\JWT\ExpiredException;
 use PHPUnit\Framework\TestCase;
 use pizzashop\auth\api\domain\service\utils\JWTManager;
+use pizzashop\auth\api\Exception\ExpiredTokenException;
 
 class JWTManagerTest extends TestCase
 {
@@ -35,7 +36,10 @@ class JWTManagerTest extends TestCase
         // Validez le jeton
         $decodedToken = $this->jwtManager->validateToken($token);
 
-        self::assertTrue($decodedToken);
+        // Vérifiez que le jeton décodé contient les bonnes informations
+        $this->assertEquals($issuer, $decodedToken->iss);
+        $this->assertEquals($userProfile['username'], $decodedToken->upr->username);
+        $this->assertEquals($userProfile['mail'], $decodedToken->upr->mail);
     }
 
     /**
@@ -51,19 +55,19 @@ class JWTManagerTest extends TestCase
         $token = $this->jwtManager->createToken($issuer, $userProfile);
 
         // Attendez quelques secondes pour que le jeton expire
-        sleep(2);
+        sleep(3);
 
         try {
             // Validez le jeton expiré et attendez une exception
             $decodedToken = $this->jwtManager->validateToken($token);
-        } catch (ExpiredException $e) {
+        } catch (ExpiredTokenException $e) {
             // Assurez-vous que l'exception est levée en raison de l'expiration
-            $this->assertInstanceOf(ExpiredException::class, $e);
+            $this->assertInstanceOf(ExpiredTokenException::class, $e);
             $this->assertEquals('Expired token', $e->getMessage());
             return;
         }
 
         // Si aucune exception n'a été levée, le test échoue
-        $this->fail('Expected an ExpiredException, but no exception was thrown.');
+        $this->fail('Expected an ExpiredTokenException, but no exception was thrown.');
     }
 }
