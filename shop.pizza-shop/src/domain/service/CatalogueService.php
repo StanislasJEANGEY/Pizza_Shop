@@ -64,6 +64,8 @@ class CatalogueService implements iCatalogueService
             $produitsDTO[] = new ProduitDTO(
                 $produit->numero,
                 $produit->libelle,
+                $produit->description,
+                $produit->image,
                 $produit->categorie->libelle,
                 $produit->tailles->map(function ($taille) {
                     return $taille->libelle;
