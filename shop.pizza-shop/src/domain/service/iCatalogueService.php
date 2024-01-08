@@ -11,5 +11,5 @@ interface iCatalogueService {
 
     public function getProduitById(int $id): ProduitDTO;
 
-    //todo jules add méthode
+    public function listerProduitsParCategorie(int $idCategorie): array;
 }

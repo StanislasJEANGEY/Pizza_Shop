@@ -40,24 +40,18 @@ class ServiceCatalogueTest extends TestCase
         $this->assertIsArray($produits);
         $this->assertNotEmpty($produits);
         $this->assertContainsOnlyInstancesOf('pizzashop\shop\domain\dto\catalogue\ProduitDTO', $produits);
-
     }
+
+    /**
+     * @throws ServiceCatalogueNotFoundException
+     */
     public function testGetProduitById()
     {
-        // Données de test
-        $id = 1; // Remplacez par un ID de produit valide dans votre base de données
-
-        // Récupérez le produit
+        $id = 1;
         $produit = self::$serviceProduits->getProduitById($id);
-
-        // Vérifiez que le produit a les bonnes informations
         $this->assertEquals(1, $produit->getNumeroProduit());
         $this->assertEquals('Margherita', $produit->getLibelle());
-        // Ajoutez d'autres assertions pour vérifier les autres propriétés du produit
-
-        // Testez avec un ID de produit non existant
-        $invalidId = 9999; // Remplacez par un ID de produit non existant dans votre base de données
-
+        $invalidId = 9999;
         try {
             $produit = self::$serviceProduits->getProduitById($invalidId);
             $this->fail('Expected a ServiceCatalogueNotFoundException, but no exception was thrown.');
@@ -67,6 +61,12 @@ class ServiceCatalogueTest extends TestCase
         }
     }
 
-    //todo jules add test
-
+    public function testListerProduitsParCategorie()
+    {
+        $id = 1;
+        $produit = self::$serviceProduits->listerProduitsParCategorie($id);
+        $this->assertIsArray($produit);
+        $this->assertNotEmpty($produit);
+        $this->assertContainsOnlyInstancesOf('pizzashop\shop\domain\dto\catalogue\ProduitDTO', $produit);
+    }
 }

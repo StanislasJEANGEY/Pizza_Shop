@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
 
 return function( \Slim\App $app):void {
 
@@ -49,8 +48,10 @@ return function( \Slim\App $app):void {
         ->setName('get-lister_produits');
 
     // catalog accederProduit
-    $app->get('/produits/{id}', \pizzashop\shop\app\actions\get\AccederProduit::class)
+    $app->get('/produits/{id}', pizzashop\shop\app\actions\get\AccederProduit::class)
         ->setName('get-acceder_produit');
 
-    //todo jules add route
+    // catalog listerProduitsParCategorie
+    $app->get('/categories/{id_categorie}/produits', pizzashop\shop\app\actions\get\ListerProduitsParCategorie::class)
+        ->setName('get-lister_produits_par_categorie');
 };

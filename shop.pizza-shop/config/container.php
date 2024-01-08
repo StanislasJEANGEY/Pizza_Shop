@@ -3,6 +3,7 @@
 use pizzashop\shop\app\actions\get\AccederCommande;
 use pizzashop\shop\app\actions\get\AccederProduit;
 use pizzashop\shop\app\actions\get\ListerProduits;
+use pizzashop\shop\app\actions\get\ListerProduitsParCategorie;
 use pizzashop\shop\app\actions\patch\ValiderCommande;
 use pizzashop\shop\app\actions\post\AuthentificationSingin;
 use pizzashop\shop\app\actions\post\CreerCommande;
@@ -55,6 +56,8 @@ return [
         return new AccederProduit($container->get('catalogue.service'));
     },
 
-    //todo jules add class
+    ListerProduitsParCategorie::class => function (ContainerInterface $container) {
+        return new ListerProduitsParCategorie($container, $container->get('catalogue.service'));
+    },
 
 ];

@@ -35,6 +35,9 @@ class CatalogueService implements iCatalogueService
         }
     }
 
+    /**
+     * @throws ServiceCatalogueNotFoundException
+     */
     public function getProduitById(int $id): ProduitDTO
     {
         $produit = Produit::where('numero', $id)
@@ -75,7 +78,29 @@ class CatalogueService implements iCatalogueService
         return $produitsDTO;
     }
 
-    // todo implement méthode
+    public function listerProduitsParCategorie(int $id): array
+    {
+        $produits = Produit::whereHas('categorie', function ($query) use ($id) {
+            $query->where('id', $id);
+        })->with(['categorie', 'tailles', 'tarifs'])->get();
+
+        $produitsDTO = [];
+        foreach ($produits as $produit) {
+            $produitsDTO[] = new ProduitDTO(
+                $produit->numero,
+                $produit->libelle,
+                $produit->description,
+                $produit->image,
+                $produit->categorie->libelle,
+                $produit->tailles->map(function ($taille) {
+                    return $taille->libelle;
+                }),
+                $produit->tarifs->first()->pivot->tarif
+            );
+        }
+
+        return $produitsDTO;
+    }
 
 }
 

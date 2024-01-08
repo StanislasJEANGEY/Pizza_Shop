@@ -9,7 +9,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class ListerProduits extends AbstractAction
+class ListerProduitsParCategorie extends AbstractAction
 {
     private iCatalogueService $catalogueService;
 
@@ -21,27 +21,27 @@ class ListerProduits extends AbstractAction
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        try{
-            $data = $this->listerProduitToJSON($this->catalogueService, $this->container);
+        try {
+            $data = $this->listerProduitsParCategorieToJSON($this->catalogueService, $args['id_categorie']);
             $status = 200;
-        } catch (Exception $e){
+        } catch (Exception $e) {
             $data = $this->exception($e);
             $status = $e->getCode();
         }
+
         $data = $this->formatJSON($data);
         $response->getBody()->write($data);
-        return $response->withHeader('Content-Type', 'application/json')
-            ->withStatus($status);
+        return $response->withHeader('Content-Type', 'application/json')->withStatus($status);
     }
 
-    public function listerProduitToJSON(iCatalogueService $service, ContainerInterface $container): array
+    public function listerProduitsParCategorieToJSON(iCatalogueService $service, int $idCategorie): array
     {
-        $produits = $service->listerProduits();
+        $produits = $service->listerProduitsParCategorie($idCategorie);
         $array_produits = [];
         foreach ($produits as $produit) {
             $array_produits[] = [
                 'libelle' => $produit->getLibelle(),
-                'link' => $container->get('link')."produits/".$produit->getNumeroProduit()
+                'link' => $this->container->get('link') . "produits/" . $produit->getNumeroProduit()
             ];
         }
         return $array_produits;
