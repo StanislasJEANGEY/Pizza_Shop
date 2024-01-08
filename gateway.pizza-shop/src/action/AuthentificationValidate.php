@@ -11,6 +11,18 @@ class AuthentificationValidate extends AbstractAction
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        //todo
+        try {
+            return $this->container->get('guzzle')->get('/auth/validate', [
+                'headers' => [
+                    'Authorization' => $request->getHeaderLine('Authorization')
+                ]
+            ]);
+        } catch (\Exception $e) {
+            $data = $this->exception($e);
+            $data = $this->formatJSON($data);
+            $response->getBody()->write($data);
+            return $response->withHeader('Content-Type', 'application/json')
+                ->withStatus($e->getCode());
+        }
     }
 }

@@ -33,7 +33,7 @@ return function( \Slim\App $app):void {
         ->setName('post-creer_commande');
 
     // authentification signin
-    $app->post('/auth/singin[/]', pizzashop\shop\app\actions\post\AuthentificationSingin::class)
+    $app->post('/auth/signin[/]', pizzashop\shop\app\actions\post\AuthentificationSingin::class)
         ->setName('post-authentification-signin');
 
     // authentification validate

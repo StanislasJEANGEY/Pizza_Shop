@@ -18,7 +18,7 @@ return function(\Slim\App $app):void {
         ->setName('post-creer_commande');
 
     // authentification signin
-    $app->post('/auth/singin[/]',\pizzashop\gateway\action\AuthentificationSignin::class)
+    $app->post('/auth/signin[/]',\pizzashop\gateway\action\AuthentificationSignin::class)
         ->setName('post-authentification-signin');
 
     // authentification validate
@@ -36,5 +36,9 @@ return function(\Slim\App $app):void {
     // catalog accederProduit
     $app->get('/produits/{id}',\pizzashop\gateway\action\AccederProduit::class)
         ->setName('get-acceder_produit');
+
+    //catalogue categorie produits
+    $app->get('/categories/{id_categorie}/produits',\pizzashop\gateway\action\ListerProduitsCategorie::class)
+        ->setName('get-lister_produits_categorie');
 
 };

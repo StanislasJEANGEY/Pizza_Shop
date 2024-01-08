@@ -25,16 +25,27 @@ class AccederCommande extends AbstractAction
     public function __invoke(Request $request, Response $response, array $args): Response
     {
         try {
-            $data = self::accederCommandeToJSON($args['id_commande'], $this->commandeService, $this->container);
-            $status = 200;
+            $res = $this->container->get('guzzle')->request('GET', $this->container->get('link_auth') . 'validate', [
+                'headers' => [
+                    'Authorization' => $request->getHeaderLine('Authorization')
+                ]
+            ]);
+            if ($res->getStatusCode() == 200){
+                $data = self::accederCommandeToJSON($args['id_commande'], $this->commandeService, $this->container);
+                $status = 200;
+            } else{
+                $resp = $res->getBody()->getContents();
+                $response->getBody()->write($resp);
+                return $response->withStatus($res->getStatusCode());
+            }
+
 
         } catch (Exception $e){
             $data = $this->exception($e);
             $status = $e->getCode();
         }
 
-        $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        $data = str_replace('\/', '/', $data);
+        $data = $this->formatJSON($data);
         $response->getBody()->write($data);
 
         return $response->withHeader('Content-Type', 'application/json')
@@ -69,10 +80,10 @@ class AccederCommande extends AbstractAction
         $data += [
             "links" => [
                 "self" => [
-                    "href" => $container->get("link")."/commandes/".$commande->getIdCommande()
+                    "href" => $container->get("link")."commandes/".$commande->getIdCommande()
                 ],
                 "valider" => [
-                    "href" => "http://localhost:8000/commandes/".$commande->getIdCommande()
+                    "href" => $container->get("link")."commandes/".$commande->getIdCommande()
                 ]
             ]
         ];

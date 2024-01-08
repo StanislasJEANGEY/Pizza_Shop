@@ -176,7 +176,7 @@ class CommandeService implements iCommandeService
 
 
         } catch (ValidationException $e) {
-            throw new ServiceValidatorException($e->getFullMessage(), 500);
+            throw new ServiceValidatorException($e->getFullMessage(), 400);
         }
         return $itemdentifiantCommande;
     }

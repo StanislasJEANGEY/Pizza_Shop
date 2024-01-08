@@ -30,26 +30,36 @@ class ValiderCommande extends AbstractAction
     public function __invoke(Request $request, Response $response, array $args): Response
     {
         try {
-            //Récupérer le contenu du body de la requête
-            $body = $request->getBody();
-            if ($body == "") {
-                $data = $this->exception(new BodyIncorrectException("Le body de la requête est vide", 400));
-                $status = 400;
-            } else {
-                $body = json_decode($body, true);
-                if (!array_key_exists('etat', $body)) {
-                    $data = $this->exception(new BodyIncorrectException("La clé 'etat' n'existe pas dans le body de la requête", 400));
+            $res = $this->container->get('guzzle')->request('GET', $this->container->get('link_auth') . 'validate', [
+                'headers' => [
+                    'Authorization' => $request->getHeaderLine('Authorization')
+                ]
+            ]);
+            if ($res->getStatusCode() == 200){
+                $body = $request->getBody();
+                if ($body == "") {
+                    $data = $this->exception(new BodyIncorrectException("Le body de la requête est vide", 400));
                     $status = 400;
                 } else {
-                    if ($body['etat'] != 'validée') {
-                        $data = $this->exception(new BodyIncorrectException("La valeur de la clé 'etat' dans le body de la requête doit être 'validée' pour valider une commande\"", 400));
+                    $body = json_decode($body, true);
+                    if (!array_key_exists('etat', $body)) {
+                        $data = $this->exception(new BodyIncorrectException("La clé 'etat' n'existe pas dans le body de la requête", 400));
                         $status = 400;
                     } else {
-                        $this->commandeService->validerCommande($args['id_commande']);
-                        $data = AccederCommande::accederCommandeToJSON($args['id_commande'], $this->commandeService, $this->container);
-                        $status = 200;
+                        if ($body['etat'] != 'validée') {
+                            $data = $this->exception(new BodyIncorrectException("La valeur de la clé 'etat' dans le body de la requête doit être 'validée' pour valider une commande\"", 400));
+                            $status = 400;
+                        } else {
+                            $this->commandeService->validerCommande($args['id_commande']);
+                            $data = AccederCommande::accederCommandeToJSON($args['id_commande'], $this->commandeService, $this->container);
+                            $status = 200;
+                        }
                     }
                 }
+            } else {
+                $resp = $res->getBody()->getContents();
+                $response->getBody()->write($resp);
+                return $response->withStatus($res->getStatusCode());
             }
         } catch (Exception $e) {
             $data = $this->exception($e);

@@ -8,6 +8,7 @@ use pizzashop\shop\app\actions\get\AccederCommande;
 use pizzashop\shop\domain\dto\commande\CommandeDTO;
 use pizzashop\shop\domain\dto\commande\ItemDTO;
 use pizzashop\shop\domain\service\iCommandeService;
+use pizzashop\shop\Exception\ServiceValidatorException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -33,7 +34,6 @@ class CreerCommande extends AbstractAction
                     'Authorization' => $request->getHeaderLine('Authorization')
                 ]
             ]);
-
             $body = $request->getBody();
             try{
                 $body = json_decode($body, true);
@@ -53,16 +53,15 @@ class CreerCommande extends AbstractAction
                 $id = $this->commandeService->creerCommande($commandeDTO);
                 $data = AccederCommande::accederCommandeToJSON($id, $this->commandeService, $this->container);
                 $status = 201;
-                $response->withHeader('Location', $this->container->get('settings') . '/commande/' . $id);
 
-            } catch (ValidationException $e) {
+            } catch (ServiceValidatorException $e) {
                 $data = [
-                    'message' => $e->getCode().' Internal Server Error',
+                    'message' => $e->getCode().' Validation error',
                     'exception' => [
                         [
                             'type' => get_class($e),
                             'code' => $e->getCode(),
-                            'message' => $e->getFullMessage(),
+                            'message' => $e->getMessage(),
                             'file' => $e->getFile(),
                             'line' => $e->getLine()
                         ]
@@ -73,11 +72,8 @@ class CreerCommande extends AbstractAction
                 $data = $this->exception($e);
                 $status = $e->getCode();
             }
-
-
         } catch (\Exception $e) {
             $data = $this->exception($e);
-
             $status = $e->getCode();
         }
         $data = $this->formatJSON($data);

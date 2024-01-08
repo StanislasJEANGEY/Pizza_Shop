@@ -19,8 +19,7 @@ class AuthentificationValidate extends AbstractAction
             ]);
         } catch (\Exception $e) {
             $data = $this->exception($e);
-            $data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-            $data = str_replace(['\/', '\\\\', '\n', '\"'], ['/', '\\', '', '"'], $data);
+            $data = $this->formatJSON($data);
             $response->getBody()->write($data);
             return $response->withHeader('Content-Type', 'application/json')
                 ->withStatus($e->getCode());
