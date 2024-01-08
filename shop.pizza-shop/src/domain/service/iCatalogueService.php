@@ -8,4 +8,6 @@ interface iCatalogueService {
     public function recupererProduit(int $numero_produit, int $taille): ProduitDTO;
 
     public function listerProduits(): array;
+
+    public function getProduitById(int $id): ProduitDTO;
 }

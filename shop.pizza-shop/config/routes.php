@@ -43,4 +43,6 @@ return function( \Slim\App $app):void {
     $app->get('/listerProduits[/]', pizzashop\shop\app\actions\get\ListerProduits::class)
         ->setName('get-lister_produits');
 
+    $app->get('/produits/{id}', \pizzashop\shop\app\actions\get\AccederProduit::class)
+        ->setName('get-acceder_produit');
 };

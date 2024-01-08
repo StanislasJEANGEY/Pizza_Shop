@@ -1,6 +1,7 @@
 <?php
 
 use pizzashop\shop\app\actions\get\AccederCommande;
+use pizzashop\shop\app\actions\get\AccederProduit;
 use pizzashop\shop\app\actions\get\ListerProduits;
 use pizzashop\shop\app\actions\patch\ValiderCommande;
 use pizzashop\shop\app\actions\post\AuthentificationSingin;
@@ -48,6 +49,10 @@ return [
 
     ListerProduits::class => function(ContainerInterface $container) {
         return new ListerProduits($container,$container->get('catalogue.service'));
+    },
+
+    AccederProduit::class => function(ContainerInterface $container) {
+        return new AccederProduit($container->get('catalogue.service'));
     },
 
 ];

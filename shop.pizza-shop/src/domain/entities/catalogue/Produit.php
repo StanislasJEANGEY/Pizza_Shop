@@ -37,13 +37,15 @@ class Produit extends Model
         return new ProduitDTO(
             $this->numero,
             $this->libelle,
+            $this->description,
             $this->categorie->libelle,
             $this->tailles->map(function ($taille) {
                 return $taille->libelle;
             }),
             $this->tarifs->map(function ($tarif) {
                 return $tarif->pivot->tarif;
-            })
+            }),
+            $this->image
         );
     }
 }

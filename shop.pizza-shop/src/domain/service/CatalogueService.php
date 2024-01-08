@@ -23,6 +23,29 @@ class CatalogueService implements iCatalogueService
             return new ProduitDTO(
                 $produit->numero,
                 $produit->libelle,
+                $produit->description,
+                $produit->image,
+                $produit->categorie->libelle,
+                $produit->tailles->map(function ($taille) {
+                    return $taille->libelle;
+                }),
+                $produit->tarifs->first()->pivot->tarif);
+        } else {
+            throw new ServiceCatalogueNotFoundException("Produit not found", 404);
+        }
+    }
+
+    public function getProduitById(int $id): ProduitDTO
+    {
+        $produit = Produit::where('numero', $id)
+            ->first();
+
+        if ($produit) {
+            return new ProduitDTO(
+                $produit->numero,
+                $produit->libelle,
+                $produit->description,
+                $produit->image,
                 $produit->categorie->libelle,
                 $produit->tailles->map(function ($taille) {
                     return $taille->libelle;
