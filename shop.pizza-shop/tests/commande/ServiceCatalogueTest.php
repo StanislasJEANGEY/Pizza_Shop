@@ -63,10 +63,10 @@ class ServiceCatalogueTest extends TestCase
 
     public function testListerProduitsParCategorie()
     {
-        $id = 1;
-        $produit = self::$serviceProduits->listerProduitsParCategorie($id);
-        $this->assertIsArray($produit);
-        $this->assertNotEmpty($produit);
-        $this->assertContainsOnlyInstancesOf('pizzashop\shop\domain\dto\catalogue\ProduitDTO', $produit);
+        $id = 5;
+        $produits = self::$serviceProduits->listerProduitsParCategorie($id);
+        $this->assertIsArray($produits);
+        $this->assertNotEmpty($produits);
+        $this->assertContainsOnlyInstancesOf('pizzashop\shop\domain\dto\catalogue\ProduitDTO', $produits);
     }
 }

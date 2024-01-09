@@ -80,9 +80,9 @@ class CatalogueService implements iCatalogueService
 
     public function listerProduitsParCategorie(int $id): array
     {
-        $produits = Produit::whereHas('categorie', function ($query) use ($id) {
-            $query->where('id', $id);
-        })->with(['categorie', 'tailles', 'tarifs'])->get();
+        $produits = Produit::where('categorie_id', $id)
+            ->with(['categorie', 'tailles', 'tarifs'])
+            ->get();
 
         $produitsDTO = [];
         foreach ($produits as $produit) {
