@@ -84,6 +84,9 @@ class CatalogueService implements iCatalogueService
             ->with(['categorie', 'tailles', 'tarifs'])
             ->get();
 
+        if ($produits->isEmpty()) {
+            throw new ServiceCatalogueNotFoundException("Produit not found", 404);
+        }
         $produitsDTO = [];
         foreach ($produits as $produit) {
             $produitsDTO[] = new ProduitDTO(
