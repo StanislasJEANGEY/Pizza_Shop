@@ -25,7 +25,7 @@ return [
 
 
     /* lien local api auth*/
-    'link_auth' => 'http://api.pizza-auth/',
+    'link_auth' => 'http://api.pizza-auth',
 
 
     'guzzle' => function(ContainerInterface $container) {
@@ -42,10 +42,6 @@ return [
 
     CreerCommande::class => function(ContainerInterface $container) {
         return new CreerCommande($container,$container->get('commande.service'));
-    },
-
-    AuthentificationSingin::class => function(ContainerInterface $container) {
-        return new AuthentificationSingin($container,);
     },
 
     ListerProduits::class => function(ContainerInterface $container) {

@@ -6,11 +6,11 @@ use pizzashop\gateway\action\AccerderCommande;
 
 return function(\Slim\App $app):void {
     // accederCommande()
-    $app->get('/commandes/{id}',AccerderCommande::class)
+    $app->get('/commandes/{id}[/]',AccerderCommande::class)
         ->setName('get-acceder_commande');
 
     // validerCommande()
-    $app->patch('/commandes/{id_commande}',\pizzashop\gateway\action\ValiderCommande::class)
+    $app->patch('/commandes/{id_commande}[/]',\pizzashop\gateway\action\ValiderCommande::class)
         ->setName('patch-valider_commande');
 
     //creerCommande()
@@ -34,11 +34,11 @@ return function(\Slim\App $app):void {
         ->setName('get-lister_produits');
 
     // catalog accederProduit
-    $app->get('/produits/{id}',\pizzashop\gateway\action\AccederProduit::class)
+    $app->get('/produits/{id}[/]',\pizzashop\gateway\action\AccederProduit::class)
         ->setName('get-acceder_produit');
 
     //catalogue categorie produits
-    $app->get('/categories/{id_categorie}/produits',\pizzashop\gateway\action\ListerProduitsCategorie::class)
+    $app->get('/categories/{id_categorie}/produits[/]',\pizzashop\gateway\action\ListerProduitsCategorie::class)
         ->setName('get-lister_produits_categorie');
 
 };

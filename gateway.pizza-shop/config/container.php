@@ -14,7 +14,6 @@ return [
     'guzzle' => function(ContainerInterface $container) {
         return new GuzzleHttp\Client(
             [
-                'base_uri' => 'http://api.pizza-shop',
                 'headers' => [
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json'
@@ -22,6 +21,7 @@ return [
             ]
         );
     },
-
+    'link_shop' => 'http://api.pizza-shop',
+    'link_auth' => 'http://api.pizza-auth',
 
 ];

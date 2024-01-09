@@ -2,7 +2,9 @@
 
 namespace pizzashop\shop\app\actions;
 
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -14,10 +16,24 @@ abstract class AbstractAction {
         $this->container = $container;
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function requeteGuzzle(string $methode, string $url, Request $request) : Response
+    {
+        return $this->container->get('guzzle')->request($methode, $url, [
+            'headers' => [
+                'Authorization' => $request->getHeaderLine('Authorization')
+            ],
+            'json' => json_decode($request->getBody(), true)
+        ]);
+    }
+
     public function exception(\Exception $e) : array
     {
         return [
-            'message' => $e->getCode() .$e->getMessage(),
+            'message' => $e->getCode() .' '. $e->getMessage(),
             'exception' => [
                 [
                     'type' => get_class($e),
