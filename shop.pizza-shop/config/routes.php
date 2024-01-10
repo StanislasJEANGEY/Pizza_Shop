@@ -38,4 +38,8 @@ return function( \Slim\App $app):void {
     // catalog listerProduitsParCategorie
     $app->get('/categories/{id_categorie}/produits', pizzashop\shop\app\actions\get\ListerProduitsParCategorie::class)
         ->setName('get-lister_produits_par_categorie');
+
+    // filtrerProduits
+    $app->get('/produits/search/{keyword}', pizzashop\shop\app\actions\get\FiltrerProduits::class)
+        ->setName('get-filtrer_produits');
 };

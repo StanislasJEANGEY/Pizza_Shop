@@ -2,6 +2,7 @@
 
 namespace pizzashop\shop\domain\service;
 
+use Exception;
 use pizzashop\shop\Exception\ServiceCatalogueNotFoundException;
 use pizzashop\shop\domain\entities\catalogue\Produit;
 use pizzashop\shop\domain\dto\catalogue\ProduitDTO;
@@ -87,6 +88,33 @@ class CatalogueService implements iCatalogueService
         if ($produits->isEmpty()) {
             throw new ServiceCatalogueNotFoundException("Produit not found", 404);
         }
+        $produitsDTO = [];
+        foreach ($produits as $produit) {
+            $produitsDTO[] = new ProduitDTO(
+                $produit->numero,
+                $produit->libelle,
+                $produit->description,
+                $produit->image,
+                $produit->categorie->libelle,
+                $produit->tailles->map(function ($taille) {
+                    return $taille->libelle;
+                }),
+                $produit->tarifs->first()->pivot->tarif
+            );
+        }
+
+        return $produitsDTO;
+    }
+
+    public function filtrerProduitsParMotCle(string $motCle): array
+    {
+        $motCle = strtolower($motCle);
+        $produits = Produit::whereRaw('LOWER(libelle) LIKE ?', ['%' . $motCle . '%'])
+            ->orWhereRaw('LOWER(description) LIKE ?', ['%' . $motCle . '%'])
+            ->with(['categorie', 'tailles', 'tarifs'])
+            ->get();
+
+
         $produitsDTO = [];
         foreach ($produits as $produit) {
             $produitsDTO[] = new ProduitDTO(

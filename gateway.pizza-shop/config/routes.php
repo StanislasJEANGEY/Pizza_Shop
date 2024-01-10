@@ -41,4 +41,7 @@ return function(\Slim\App $app):void {
     $app->get('/categories/{id_categorie}/produits[/]',\pizzashop\gateway\action\ListerProduitsCategorie::class)
         ->setName('get-lister_produits_categorie');
 
+    $app->get('/produits/search/{keyword}', \pizzashop\gateway\action\FiltrerProduits::class)
+        ->setName('get-filtrer_produits');
+
 };
