@@ -48,7 +48,7 @@ abstract class AbstractAction {
     public function exception(\Exception $e) : array
     {
         return [
-            'message' => $e->getCode() .$e->getMessage(),
+            'message' => $e->getCode() .' '. $e->getMessage(),
             'exception' => [
                 [
                     'type' => get_class($e),
