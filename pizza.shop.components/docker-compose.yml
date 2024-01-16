@@ -20,8 +20,9 @@ services:
         aliases:
           - api.pizza-shop.local
     depends_on:
-      - pizza-shop.commande.db
-      - pizza-shop.catalogue.db
+      rabbitmq:
+        condition: service_healthy
+
 
 
 
