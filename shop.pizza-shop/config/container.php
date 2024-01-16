@@ -2,6 +2,7 @@
 
 use pizzashop\shop\app\actions\get\AccederCommande;
 use pizzashop\shop\app\actions\get\AccederProduit;
+use pizzashop\shop\app\actions\get\FiltrerProduits;
 use pizzashop\shop\app\actions\get\ListerProduits;
 use pizzashop\shop\app\actions\get\ListerProduitsParCategorie;
 use pizzashop\shop\app\actions\patch\ValiderCommande;
@@ -53,6 +54,10 @@ return [
 
     ListerProduitsParCategorie::class => function (ContainerInterface $container) {
         return new ListerProduitsParCategorie($container, $container->get('catalogue.service'));
+    },
+
+    FiltrerProduits::class => function (ContainerInterface $container) {
+        return new FiltrerProduits($container, $container->get('catalogue.service'));
     },
 
 ];

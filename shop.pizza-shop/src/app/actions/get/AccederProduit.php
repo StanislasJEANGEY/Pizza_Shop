@@ -21,6 +21,7 @@ class AccederProduit extends AbstractAction
     public function __invoke(Request $request, Response $response, array $args): Response
     {
         $id = $args['id'];
+        echo $id;
 
         try{
             $data = self::accederProduitToJSON($id, $this->catalogueService);
