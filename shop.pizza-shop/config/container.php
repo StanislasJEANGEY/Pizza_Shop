@@ -1,5 +1,7 @@
 <?php
 
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 use pizzashop\shop\app\actions\get\AccederCommande;
 use pizzashop\shop\app\actions\get\AccederProduit;
 use pizzashop\shop\app\actions\get\FiltrerProduits;
@@ -21,7 +23,7 @@ return [
     },
 
     /* lien local api shop*/
-    'link' => 'http://localhost:182/',
+    'link' => 'http://localhost:180/',
 
 
     /* lien local api auth*/
@@ -59,5 +61,17 @@ return [
     FiltrerProduits::class => function (ContainerInterface $container) {
         return new FiltrerProduits($container, $container->get('catalogue.service'));
     },
+
+    'message.channel' => function (ContainerInterface $container) {
+        $connection = new AMQPStreamConnection('rabbitmq', 5672, 'pizza_shop_user', 'pizza_shop');
+        return $connection->channel();
+    },
+    'message.message' => function (ContainerInterface $container) {
+        return new AMQPMessage();
+    },
+    'message.exchange' => 'pizzashop',
+    'message.queue' => 'nouvelles_commandes',
+    'message.routing_key' => 'nouvelle',
+
 
 ];

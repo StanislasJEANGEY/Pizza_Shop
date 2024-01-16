@@ -72,7 +72,6 @@ $commande = json_encode($data);
 $msg = new AMQPMessage($commande);
 
 // Publication du message
-var_dump($commande);
 $channel->basic_publish($msg, 'pizzashop', 'nouvelle');
 
 echo " [x] Sent ", $commande, "\n";

@@ -56,6 +56,11 @@ class ValiderCommande extends AbstractAction
                 }
                 $data = $this->formatJSON($data);
             }
+            $channel = $this->container->get('message.channel');
+            $message = $this->container->get('message.message')->setBody($data);
+            $channel->basic_publish($message, $this->container->get('message.exchange'), $this->container->get('message.routing_key'));
+            $channel->close();
+
         } catch (ClientException $e){
             $data = $e->getResponse()->getBody()->getContents();
             $status = $e->getResponse()->getStatusCode();
