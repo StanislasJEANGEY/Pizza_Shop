@@ -73,7 +73,7 @@ $msg = new AMQPMessage($commande);
 
 // Publication du message
 var_dump($commande);
-$channel->basic_publish($msg, '', 'nouvelles_commandes');
+$channel->basic_publish($msg, 'pizzashop', 'nouvelle');
 
 echo " [x] Sent ", $commande, "\n";
 
