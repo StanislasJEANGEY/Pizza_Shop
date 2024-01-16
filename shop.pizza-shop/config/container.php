@@ -5,7 +5,6 @@ use pizzashop\shop\app\actions\get\AccederProduit;
 use pizzashop\shop\app\actions\get\ListerProduits;
 use pizzashop\shop\app\actions\get\ListerProduitsParCategorie;
 use pizzashop\shop\app\actions\patch\ValiderCommande;
-use pizzashop\shop\app\actions\post\AuthentificationSingin;
 use pizzashop\shop\app\actions\post\CreerCommande;
 use pizzashop\shop\domain\service\CatalogueService;
 use pizzashop\shop\domain\service\CommandeService;
@@ -21,7 +20,7 @@ return [
     },
 
     /* lien local api shop*/
-    'link' => 'http://localhost:18074/',
+    'link' => 'http://localhost:182/',
 
 
     /* lien local api auth*/

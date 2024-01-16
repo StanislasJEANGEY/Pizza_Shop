@@ -10,8 +10,7 @@ services:
     image: 'canals/php:latest'
     env_file: ./shop.env
     ports:
-      - '18070:80'
-      - '18071:443'
+      - '181:80'
     volumes:
       - ../shop.pizza-shop/public:/var/www/html
       - ../shop.pizza-shop:/var/www
@@ -33,7 +32,7 @@ services:
     command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
     env_file: ./shop.env
     ports:
-      - '18076:3306'
+      - '186:3306'
     networks:
       - pizza-shop.net
     volumes:
@@ -45,7 +44,7 @@ services:
     image: 'postgres:latest'
     env_file: ./cat.env
     ports:
-      - '18075:5432'
+      - '185:5432'
     networks:
       - pizza-shop.net
     volumes:
@@ -57,7 +56,7 @@ services:
     image: adminer
     command: php -S 0.0.0.0:8080 -t /var/www/html
     ports:
-      - '18077:8080'
+      - '189:8080'
     networks:
       - pizza-shop.net
     depends_on:
@@ -74,8 +73,7 @@ services:
     image: 'canals/php:latest'
     env_file: ./auth.env
     ports:
-      - '18072:80'
-      - '18073:443'
+      - '182:80'
     volumes:
       - ../auth.pizza-shop/public:/var/www/html
       - ../auth.pizza-shop:/var/www
@@ -92,7 +90,7 @@ services:
     command: '--default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci'
     env_file: ./auth.env
     ports:
-      - '18078:3306'
+      - '187:3306'
     networks:
       - pizza-shop.net
     volumes:
@@ -105,7 +103,7 @@ services:
   api.gateway:
     image: 'canals/php:latest'
     ports:
-      - '18074:80'
+      - '180:80'
     networks:
       - pizza-shop.net
     volumes:
@@ -115,3 +113,19 @@ services:
     depends_on:
       - api.pizza-shop
       - api.pizza-auth
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - '183:15672'
+      - '184:5672'
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 8s
+      timeout: 30s
+      retries: 3
+    networks:
+      - pizza-shop.net
+    volumes:
+      - ../rabbitmq.pizza-shop:/var/lib/rabbitmq
+    env_file: ./rab.env
