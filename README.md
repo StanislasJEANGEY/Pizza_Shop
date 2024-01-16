@@ -42,7 +42,7 @@ Développement Web
 **Adminer :** [http://localhost:189](http://localhost:189) 
 
 ## RabbitMQ
-**Login :**`pizza_shop` **Password :** `pizza_shop`
+**Login :**`pizza_shop` **Password :** `pizza_shop`  
 **URL :** [http://localhost:183](http://localhost:183) [http://localhost:184](http://localhost:184)
 
 
