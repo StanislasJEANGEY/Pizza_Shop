@@ -7,7 +7,7 @@ services:
   # service api.pizza-shop : api pour la prise de commandes
   #
   api.pizza-shop:
-    image: 'canals/php:latest'
+    image: 'canals/php:8.2'
     env_file: ./shop.env
     ports:
       - '181:80'
@@ -71,7 +71,7 @@ services:
 ###  utilise sa propre base de données
 ######################################
   api.pizza-auth:
-    image: 'canals/php:latest'
+    image: 'canals/php:8.2'
     env_file: ./auth.env
     ports:
       - '182:80'
@@ -102,7 +102,7 @@ services:
 ## api gateway
 
   api.gateway:
-    image: 'canals/php:latest'
+    image: 'canals/php:8.2'
     ports:
       - '180:80'
     networks:
