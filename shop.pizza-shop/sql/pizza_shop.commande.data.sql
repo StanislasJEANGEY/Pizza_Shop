@@ -172,3 +172,5 @@ INSERT INTO `item` (`id`, `numero`, `libelle`, `taille`, `libelle_taille`, `tari
 (307,	2,	'Reine',	1,	'normale',	9.99,	1,	'2b2d555d-05a6-45b4-afa2-b0ef425b4c06');
 
 -- 2023-09-06 14:47:34
+
+

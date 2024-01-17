@@ -62,7 +62,7 @@ return [
         return new FiltrerProduits($container, $container->get('catalogue.service'));
     },
 
-    'message.channel' => function (ContainerInterface $container) {
+    'message.channel' => function () {
         $connection = new AMQPStreamConnection('rabbitmq', 5672, 'pizza_shop_user', 'pizza_shop');
         return $connection->channel();
     },

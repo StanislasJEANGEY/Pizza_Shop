@@ -49,7 +49,6 @@ class ValiderCommande extends AbstractAction
                         } else {
                             $this->commandeService->validerCommande($args['id_commande']);
                             $data = AccederCommande::accederCommandeToJSON($args['id_commande'], $this->commandeService, $this->container);
-
                             $status = 200;
                         }
                     }
