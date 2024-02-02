@@ -67,3 +67,4 @@ rabbitmq.pizza-shop/mnesia
 rabbitmq.pizza-shop/.erlang.cookie
 
 node_modules
+package-lock.json
