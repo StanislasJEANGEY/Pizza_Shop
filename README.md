@@ -45,6 +45,13 @@ Développement Web
 **Login :**`pizza_shop` **Password :** `pizza_shop`  
 **URL :** [http://localhost:183](http://localhost:183) [http://localhost:184](http://localhost:184)
 
+## Base de données : Node
+**Nom :** `pizza_shop`  
+**Nom du conteneur :** `node.pizza-shop.db`  
+**Login :** `pizza_shop` **Password :** `pizza_shop`  
+**Lien :** [http://localhost:190](http://localhost:190)  
+**Adminer :** [http://localhost:189](http://localhost:189)
+
 
 ## Constante du projet
 
