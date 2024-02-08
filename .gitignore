@@ -68,3 +68,4 @@ rabbitmq.pizza-shop/.erlang.cookie
 
 node_modules
 package-lock.json
+node.pizza-shop/package-lock.json
