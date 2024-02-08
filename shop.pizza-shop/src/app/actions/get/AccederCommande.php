@@ -62,10 +62,10 @@ class AccederCommande extends AbstractAction
         }
         $data = [
             'id' => $commande->getIdCommande(),
-            'délai' => $commande->getDelaiCommande(),
+            'delai' => $commande->getDelaiCommande(),
             'date' => $commande->getDateCommande(),
             'type livraison' => $commande->getTypeLivraison(),
-            'état' => $commande->getEtatCommande(),
+            'etat' => $commande->getEtatCommande(),
             'montant' => $commande->getMontantCommande(),
             'mail client' => $commande->getMailClient(),
             'items' => $array_item

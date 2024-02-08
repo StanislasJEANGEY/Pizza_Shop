@@ -136,17 +136,21 @@ services:
 
   node.pizza-shop:
     image: node:alpine
+    command: sh -c "npm i && npm run dev"
+    working_dir: /usr/src/app
+    volumes:
+      - ../node.pizza-shop:/usr/src/app
+    ports:
+      - "3333:3000"
+    env_file:
+      - ../node.pizza-shop/.env
     networks:
       - pizza-shop.net
-    working_dir: /usr/app
-    command: sh -c "npm i && npm run watch" #for development only
-    #command: sh -c "npm i && npm start" #for production only
-    volumes:
-      - ../node.pizza-shop:/usr/app
-    ports:
-      - '3333:3000'
-    env_file:
-      - ./node.env
+    depends_on:
+      node.pizza-shop.db:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
 
 
   node.pizza-shop.db:
@@ -160,3 +164,28 @@ services:
     volumes:
       - ../node.pizza-shop/sql-auto:/var/sql
       - ../node.pizza-shop/sql-auto:/docker-entrypoint-initdb.d
+
+  websocket:
+    image: node:alpine
+    command: sh -c "npm i && npm run dev"
+    working_dir: /usr/src/app
+    volumes:
+      - ../websocket.pizza-shop:/usr/src/app
+    ports:
+      - "3080:3000"
+    env_file:
+      - ../websocket.pizza-shop/.env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - pizza-shop.net
+
+  webclient:
+    build: ../webclient
+    ports:
+      - "8181:80"
+    depends_on:
+      - websocket
+    networks:
+      - pizza-shop.net

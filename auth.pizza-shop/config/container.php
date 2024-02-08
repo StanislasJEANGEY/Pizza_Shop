@@ -11,7 +11,7 @@ use Psr\Container\ContainerInterface;
 return [
 
     'jwtmanager' => function(ContainerInterface $container) {
-                return new JWTManager('secretKey', 3600);
+                return new JWTManager('secretKey', 604800 /*1 semaine */);
     },
 
 ];

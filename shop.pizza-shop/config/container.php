@@ -63,7 +63,7 @@ return [
     },
 
     'message.channel' => function () {
-        $connection = new AMQPStreamConnection('rabbitmq', 5672, 'pizza_shop_user', 'pizza_shop');
+        $connection = new AMQPStreamConnection('rabbitmq', 5672, 'pizza_shop', 'pizza_shop');
         return $connection->channel();
     },
     'message.message' => function (ContainerInterface $container) {
