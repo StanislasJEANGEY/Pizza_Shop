@@ -4,7 +4,9 @@ import { WebSocketServer } from "ws";
 const amqp_url = process.env.AMQP_URL;
 const queue = process.env.QUEUE;
 const consumerTag = process.env.CONSUMER_TAG;
-
+console.log("amqp_url : "+amqp_url)
+console.log("queue : "+queue)
+console.log("consumerTag : "+consumerTag)
 const wss = new WebSocketServer({ port: 3000 });
 
 const subscribers = new Map();
@@ -19,17 +21,16 @@ wss.on("connection", (socket) => {
 
     try {
       const msg = JSON.parse(message);
-      const user_id = parseInt(msg.user_id);
+      const commande_id = msg.commande_id;
 
       if (msg.type === "subscribe") {
-        subscribers.set(user_id, socket); //ajoute un destinataire et le référence selon son id
+        subscribers.set(commande_id, socket); //ajoute un destinataire et le référence selon son id
         const data = JSON.stringify({
           type: "subscribe",
-          user_id: user_id
+          commande: commande_id
         });
 
-        console.log(`User #${user_id} has been registered to WS notifications`);
-
+        console.log(`Commande #${commande_id} has been registered to WS notifications`);
         socket.send(data);
       }
     } catch (error) {
@@ -39,48 +40,36 @@ wss.on("connection", (socket) => {
   });
 });
 
-//emet une notification à tous les destinataires sans distinction d'id
-async function notifyAll(msg) {
-  try {
-    const data = JSON.stringify({
-      type: "notification",
-      task: msg.task,
-      message: msg.message
-    });
-
-    //console.log("nombre de destinataires : " + subscribers.entries.length);
-
-    subscribers.forEach(async (client) => {
-      if (!client) {
-        console.log("User %s disconnected from Websocket", msg.task.user_id);
-      } else {
-        await client.send(data);
-        console.log("Notification sent to User : %s", msg.task.user_id);
-      }
-    });
-  } catch (error) {
-    console.error(error);
-  }
-}
 
 //emet une notification à un destinataire (User) sur la base de son id
 function notify(msg) {
   try {
+    let message = `La commande #${msg.id} `
+    switch (msg.status){
+      case 1:
+        message += 'est bien reçue'
+        break
+      case 2:
+        message += 'est en cours de préparation'
+        break
+      case 3:
+        message += 'est prête'
+    }
     const data = JSON.stringify({
       type: "notification",
-      task: msg.task,
-      message: msg.message
+      commande: msg.id,
+      message: message
     });
 
-    const user_id = msg.task.user_id;
+    const commande_id = msg.id;
 
-    const client = subscribers.get(parseInt(user_id));
+    const client = subscribers.get(commande_id);
 
     if (!client) {
-      console.log("User %s disconnected from Websocket", msg.task.user_id);
+      console.log("Commande #%s disconnected from Websocket", msg.commande_id);
     } else {
       client.send(data);
-      console.log("Notification sent to User : %s", msg.task.user_id);
+      console.log("Notification sent to User : %s", msg.commande_id);
     }
   } catch (error) {
     console.error(error);

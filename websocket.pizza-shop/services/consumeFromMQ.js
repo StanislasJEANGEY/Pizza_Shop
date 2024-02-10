@@ -7,6 +7,7 @@ async function consumeFromMQ(amqp_url, queue, consumerTag, notify) {
     channel.prefetch(10);
 
     await channel.assertQueue(queue, { durable: true });
+    console.log(`Connected to RabbitMQ and consuming queue: ${queue}`);
 
     await channel.consume(
       queue,
