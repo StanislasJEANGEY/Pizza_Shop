@@ -1,11 +1,10 @@
 # Pizza_Shop
 
-Développement Web
+Développement Web Serveur Avancé
 
 ## Membres du groupe
 
 -   Jules BRESSON
--   Antonin DEPOILLY
 -   Stanislas JEANGEY
 -   Damien MELCHIOR
 
@@ -53,3 +52,28 @@ Développement Web
 **Adminer :** [http://localhost:189](http://localhost:189)
 
 
+## Pour lancer le projet 
+
+1. Exécuter les commandes suivantes dans le dossier `Pizza_Shop\pizza.shop.components`
+    ```bash
+    docker compose up -d
+    docker compose exec api.pizza-shop composer install
+    docker compose exec api.pizza-auth composer install
+    docker compose exec api.gateway composer install
+    ```
+
+2. Se rendre sur l'url : [http://localhost:183](http://localhost:183)
+
+3. Se connecter avec les identifiants suivants :  
+   **Username** : pizza_shop  
+   **Password** : pizza_shop
+
+4. Créer l'**EXCHANGE** : `pizzashop` de **TYPE** `DIRECT`
+
+5. Créer une **QUEUE** : `nouvelles_commandes` de **TYPE** : `classic` et avec la **PROPRIETE** : `durable`
+
+6. Créer un binding entre l'**EXCHANGE** `pizzashop` et la **QUEUE** `nouvelles_commandes` avec la **ROUTING_KEY** : `nouvelle`.
+
+7. Créer une **QUEUE** : `suivi_commandes` de **TYPE** : `classic` et avec la **PROPRIETE** : `durable`
+
+8. Créer un binding entre l'**EXCHANGE** `pizzashop` et la **QUEUE** `suivi_commandes` avec la **ROUTING_KEY** : `suivi`.
