@@ -14,6 +14,8 @@ Développement Web Serveur Avancé
 **Commande :** [http://localhost:181](http://localhost:181)  
 **Catalogue :** [http://localhost:181](http://localhost:181)  
 **Utilisateur :** [http://localhost:182](http://localhost:182)  
+**API Node :**[http://localhost:3333](http://localhost:3333)  
+**Web Socket**[http://localhost:3080](http://localhost:3080)
 
 
 ## Bases de données : Commande
